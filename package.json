@@ -7,7 +7,7 @@
   "name": "projet2_e24_ift3225",
   "version": "1.0.0",
   "description": "",
-  "main": "script.js",
+  "main": "app.js",
   "scripts": {
     "test": "echo"
   },
