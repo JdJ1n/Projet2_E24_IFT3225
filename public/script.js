@@ -1,5 +1,11 @@
 document.addEventListener('DOMContentLoaded', (event) => {
 
+    var title = document.getElementById("title");
+
+    title.addEventListener('click', function () {
+    window.location.href = "index2.html";
+    });
+
     function createCodon(codons, name, abbrev) {
         let obj = {};
         codons.forEach(codon => {
