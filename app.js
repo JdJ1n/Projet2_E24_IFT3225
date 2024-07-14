@@ -7,4 +7,3 @@ app.listen(PORT, () => {
 });
 
 app.use(express.static('public'));
-
