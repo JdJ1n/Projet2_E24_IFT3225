@@ -27,10 +27,16 @@
 
 document.addEventListener('DOMContentLoaded', (event) => {
     var userlogin = document.getElementById("userlogin");
+    var adminlogin = document.getElementById("adminlogin");
 
     userlogin.addEventListener('click', async function () {
         const email = document.getElementById('floatingInput').value;
         const password = document.getElementById('floatingPassword').value;
+
+        if (!email || !password) {
+            alert("All fields are required");
+            return;
+        }
 
         const response = await fetch('/login', {
             method: 'POST',
@@ -44,18 +50,20 @@ document.addEventListener('DOMContentLoaded', (event) => {
         if (data.token) {
             localStorage.setItem('token', data.token);
             alert('Login successful');
-            fetchTasks();
             window.location.href = "user_page.html";
         } else {
             alert(data.message);
         }
     });
 
-    var adminlogin = document.getElementById("adminlogin");
-
     adminlogin.addEventListener('click', async function () {
-        const email = document.getElementById('floatingInput').value;
-        const password = document.getElementById('floatingPassword').value;
+        const password = document.getElementById('adminPassword').value;
+        const email = 'admin@admin.com'; // 预定义的管理员邮箱
+
+        if (!password) {
+            alert("Password is required");
+            return;
+        }
 
         const response = await fetch('/login', {
             method: 'POST',
@@ -69,7 +77,6 @@ document.addEventListener('DOMContentLoaded', (event) => {
         if (data.token) {
             localStorage.setItem('token', data.token);
             alert('Admin Login successful');
-            fetchTasks();
             window.location.href = "admin_page.html";
         } else {
             alert(data.message);
@@ -80,6 +87,11 @@ document.addEventListener('DOMContentLoaded', (event) => {
         e.preventDefault();
         const email = document.getElementById('floatingInput').value;
         const password = document.getElementById('floatingPassword').value;
+
+        if (!email || !password) {
+            alert("All fields are required");
+            return;
+        }
 
         const response = await fetch('/register', {
             method: 'POST',
@@ -126,3 +138,4 @@ document.addEventListener('DOMContentLoaded', (event) => {
         card.classList.add(...classes);
     });
 });
+

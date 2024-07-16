@@ -28,6 +28,8 @@ const path = require('path');
 const port = 8888;
 const app = express();
 const secretKey = 'your_secret_key';
+const adminEmail = 'admin@admin.com';
+const adminPassword = 'ift3225';
 
 // 使用 body-parser 中间件解析 JSON 数据
 app.use(bodyParser.json());
@@ -66,13 +68,20 @@ app.post('/register', async (req, res) => {
 });
 
 // 用户登录
-app.post('/login', (req, res) => {
+app.post('/login', async (req, res) => {
     const { email, password } = req.body;
 
     if (!email || !password) {
         return res.status(400).json({ message: 'All fields are required' });
     }
 
+    // 管理员登录
+    if (email === adminEmail && password === adminPassword) {
+        const adminToken = jwt.sign({ id: 0, role: 'admin' }, secretKey, { expiresIn: '1h' });
+        return res.json({ token: adminToken });
+    }
+
+    // 普通用户登录
     connection.query('SELECT * FROM users WHERE email = ?', [email], async (err, results) => {
         if (err) return res.status(500).json({ message: err.message });
         if (results.length === 0) return res.status(400).json({ message: 'User not found' });
@@ -118,3 +127,4 @@ app.listen(port, (err) => {
     }
     console.log(`Server is running on port ${port}`);
 });
+
