@@ -93,6 +93,12 @@
         min-height: 75rem;
         padding-top: 4.5rem;
       }
+
+      .card-img-top {
+        object-fit: cover;
+        background-size: cover;
+        background-position: center;
+      }
       
     </style>
 
@@ -209,7 +215,7 @@
     <p class="lead">This example is a quick exercise to illustrate how fixed to top navbar works. As you scroll, it will remain fixed to the top of your browser’s viewport.</p>
     <a class="btn btn-lg btn-primary" href="../components/navbar/" role="button">View navbar docs &raquo;</a>
   </div>
-  <div>
+  <!-- Sign up template -->
     <div class="modal modal-sheet position-static d-block bg-body-secondary p-4 py-md-5" tabindex="-1" role="dialog" id="modalSignin">
       <div class="modal-dialog" role="document">
         <div class="modal-content rounded-4 shadow">
@@ -249,9 +255,10 @@
         </div>
       </div>
     </div>
+    <!-- Sign up template -->
     <div>
-      <div class="row" data-masonry="{&quot;percentPosition&quot;: true }" style="position: relative; height: 1211.33px;">
-        <div class="col-sm-6 col-lg-4 mb-4" style="position: absolute; left: 0%; top: 0px;">
+      <div class="row" data-masonry="{&quot;percentPosition&quot;: true }">
+        <div class="col-sm-6 col-lg-4 mb-4">
           <div class="card">
             <svg class="bd-placeholder-img card-img-top" width="100%" height="200" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: Image cap" preserveAspectRatio="xMidYMid slice" focusable="false" _mstaria-label="423865" _mstHash="10"><title _mstHash="11">Placeholder</title><rect width="100%" height="100%" fill="#868e96"></rect><text x="50%" y="50%" fill="#dee2e6" dy=".3em" _mstHash="12">Image cap</text></svg>
             <div class="card-body">
@@ -260,7 +267,7 @@
             </div>
           </div>
         </div>
-        <div class="col-sm-6 col-lg-4 mb-4" style="position: absolute; left: 50%; top: 0px;">
+        <div class="col-sm-6 col-lg-4 mb-4">
           <div class="card p-3">
             <figure class="p-3 mb-0">
               <blockquote class="blockquote">
@@ -272,17 +279,48 @@
             </figure>
           </div>
         </div>
-        <div class="col-sm-6 col-lg-4 mb-4" style="position: absolute; left: 50%; top: 251.333px;">
+        <!-- template -->
+        <div class="col-sm-6 col-lg-4 mb-4">
           <div class="card">
-            <svg class="bd-placeholder-img card-img-top" width="100%" height="200" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: Image cap" preserveAspectRatio="xMidYMid slice" focusable="false" _mstaria-label="423865" _mstHash="17"><title _mstHash="18">Placeholder</title><rect width="100%" height="100%" fill="#868e96"></rect><text x="50%" y="50%" fill="#dee2e6" dy=".3em" _mstHash="19">Image cap</text></svg>
+            <div class="bd-placeholder-img card-img-top">
+              <img src="images/Yes_Fragile.jpg" alt="Fragile" height="100%" width="100%" class="bd-placeholder-img">
+            </div>
             <div class="card-body">
-              <h5 class="card-title">Card title</h5>
-              <p class="card-text">This card has supporting text below as a natural lead-in to additional content.</p>
+              <h5 class="card-title">Yes - Fragile</h5>
+              <p class="card-text">This card has supporting text below as a natural lead-in to additional content.This card has supporting text below as a natural lead-in to additional content.This card has supporting text below as a natural lead-in to additional content.</p>
               <p class="card-text"><small class="text-body-secondary">Last updated 3 mins ago</small></p>
+              <div class="d-flex justify-content-between align-items-center">
+                <div class="btn-group">
+                  <button type="button" class="btn btn-sm btn-outline-secondary">View</button>
+                  <button type="button" class="btn btn-sm btn-outline-secondary">Edit</button>
+                </div>
+                <button type="button" class="btn btn-sm btn-outline-secondary">Delete</button>
+                
+              </div>
             </div>
           </div>
         </div>
-        <div class="col-sm-6 col-lg-4 mb-4" style="position: absolute; left: 0%; top: 433.333px;">
+        
+        <div class="col-sm-6 col-lg-4 mb-4">
+          <div class="card">
+            <div class="card-body btn btn-sm btn-outline-secondary">
+              <a href="#" class="stretched-link card-text">
+                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="#6c757d" class="bi bi-plus card-text" viewBox="0 0 16 16">
+                  <path d="M7.5 1.5a.5.5 0 0 1 .5.5v5h5a.5.5 0 0 1 0 1h-5v5a.5.5 0 0 1-1 0v-5h-5a.5.5 0 0 1 0-1h5v-5a.5.5 0 0 1 .5-.5z"/>
+                </svg>
+              </a>
+            </div>
+          </div>
+        </div>
+
+        
+        
+        
+        
+        
+        <!-- template -->
+         
+        <div class="col-sm-6 col-lg-4 mb-4">
           <div class="card text-bg-primary text-center p-3">
             <figure class="mb-0">
               <blockquote class="blockquote">
@@ -294,7 +332,7 @@
             </figure>
           </div>
         </div>
-        <div class="col-sm-6 col-lg-4 mb-4" style="position: absolute; left: 0%; top: 622.666px;">
+        <div class="col-sm-6 col-lg-4 mb-4">
           <div class="card text-center">
             <div class="card-body">
               <h5 class="card-title">Card title</h5>
@@ -303,12 +341,12 @@
             </div>
           </div>
         </div>
-        <div class="col-sm-6 col-lg-4 mb-4" style="position: absolute; left: 50%; top: 676.666px;">
+        <div class="col-sm-6 col-lg-4 mb-4">
           <div class="card">
             <svg class="bd-placeholder-img card-img" width="100%" height="260" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: Card image" preserveAspectRatio="xMidYMid slice" focusable="false" _mstaria-label="459771" _mstHash="28"><title _mstHash="29">Placeholder</title><rect width="100%" height="100%" fill="#868e96"></rect><text x="50%" y="50%" fill="#dee2e6" dy=".3em" _mstHash="30">Card image</text></svg>
           </div>
         </div>
-        <div class="col-sm-6 col-lg-4 mb-4" style="position: absolute; left: 0%; top: 823.999px;">
+        <div class="col-sm-6 col-lg-4 mb-4">
           <div class="card p-3 text-end">
             <figure class="mb-0">
               <blockquote class="blockquote">
@@ -320,7 +358,7 @@
             </figure>
           </div>
         </div>
-        <div class="col-sm-6 col-lg-4 mb-4" style="position: absolute; left: 50%; top: 961.999px;">
+        <div class="col-sm-6 col-lg-4 mb-4">
           <div class="card">
             <div class="card-body">
               <h5 class="card-title">Card title</h5>
@@ -329,8 +367,54 @@
             </div>
           </div>
         </div>
+
+        <div class="col-sm-6 col-lg-4 mb-4">
+          <div class="card">
+            <div class="bd-placeholder-img card-img-top">
+              <img src="images/Default.png" alt="Fragile.png" height="100%" width="100%" class="bd-placeholder-img">
+            </div>
+            <div class="card-body">
+              <h5 class="card-title">Default</h5>
+              <p class="card-text">This card has supporting text below as a natural lead-in to additional content.</p>
+              <p class="card-text"><small class="text-body-secondary">created by jiadong.jin@umontreal.ca</small></p>
+              <div class="d-flex justify-content-between align-items-center">
+                <div class="btn-group">
+                  <button type="button" class="btn btn-sm btn-outline-secondary">View</button>
+                  <button type="button" class="btn btn-sm btn-outline-secondary">Edit</button>
+                </div>
+                <button type="button" class="btn btn-sm btn-outline-secondary">Delete</button>
+                
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-sm-6 col-lg-4 mb-4">
+          <div class="card">
+            <div class="card-body btn btn-sm btn-outline-secondary">
+              <a href="#" class="stretched-link card-text">
+                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="#6c757d" class="bi bi-plus card-text" viewBox="0 0 16 16">
+                  <path d="M7.5 1.5a.5.5 0 0 1 .5.5v5h5a.5.5 0 0 1 0 1h-5v5a.5.5 0 0 1-1 0v-5h-5a.5.5 0 0 1 0-1h5v-5a.5.5 0 0 1 .5-.5z"/>
+                </svg>
+              </a>
+            </div>
+          </div>
+        </div>
+
       </div>
+
+      
+
     </div>
+  <div>
+    <ul class="pagination justify-content-center">
+      <li class="page-item"><a class="page-link" href="#">Previous</a></li>
+      <li class="page-item"><a class="page-link" href="#">1</a></li>
+      <li class="page-item active"><a class="page-link" href="#">2</a></li>
+      <li class="page-item"><a class="page-link" href="#">3</a></li>
+      <li class="page-item"><a class="page-link" href="#">Next</a></li>
+    </ul>
+
   </div>
 </main>
 <script src="assets/dist/js/bootstrap.bundle.min.js"></script>
