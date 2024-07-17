@@ -201,6 +201,13 @@
       </ul>
       <div class="d-lg-flex col-lg-3 justify-content-lg-end">
           <form class="d-flex rounded-3" role="search">
+              <label for="exampleSelect" class="form-label visually-hidden">Select menu</label>
+              <select class="form-select" id="exampleSelect">
+                <option selected="">Open this select menu</option>
+                <option value="1">One</option>
+                <option value="2">Two</option>
+                <option value="3">Three</option>
+              </select>
             <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
             <button class="btn btn-outline-success me-2" type="submit">Search</button>
             <button id="backtologin" class="btn btn-primary me-2" type="button">Quitter</button>
@@ -216,47 +223,62 @@
     <p class="lead">This example is a quick exercise to illustrate how fixed to top navbar works. As you scroll, it will remain fixed to the top of your browser’s viewport.</p>
     <a class="btn btn-lg btn-primary" href="../components/navbar/" role="button">View navbar docs &raquo;</a>
   </div>
-  <!-- Sign up template start -->
-    <div class="modal modal-sheet position-static d-block bg-body-secondary p-4 py-md-5" tabindex="-1" role="dialog" id="modalSignin">
-      <div class="modal-dialog" role="document">
-        <div class="modal-content rounded-4 shadow">
-          <div class="modal-header p-5 pb-4 border-bottom-0">
-            <h1 class="fw-bold mb-0 fs-2">Sign up for free</h1>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-          </div>
-    
-          <div class="modal-body p-5 pt-0">
-            <form class="">
-              <div class="form-floating mb-3">
-                <input type="email" class="form-control rounded-3" id="floatingInput" placeholder="name@example.com">
-                <label for="floatingInput">Email address</label>
-              </div>
-              <div class="form-floating mb-3">
-                <input type="password" class="form-control rounded-3" id="floatingPassword" placeholder="Password">
-                <label for="floatingPassword">Password</label>
-              </div>
-              <button class="w-100 mb-2 btn btn-lg rounded-3 btn-primary" type="submit">Sign up</button>
-              <small class="text-body-secondary">By clicking Sign up, you agree to the terms of use.</small>
-              <hr class="my-4">
-              <h2 class="fs-5 fw-bold mb-3">Or use a third-party</h2>
-              <button class="w-100 py-2 mb-2 btn btn-outline-secondary rounded-3" type="submit">
-                <svg class="bi me-1" width="16" height="16"><use xlink:href="#twitter"></use></svg>
-                Sign up with Twitter
-              </button>
-              <button class="w-100 py-2 mb-2 btn btn-outline-primary rounded-3" type="submit">
-                <svg class="bi me-1" width="16" height="16"><use xlink:href="#facebook"></use></svg>
-                Sign up with Facebook
-              </button>
-              <button class="w-100 py-2 mb-2 btn btn-outline-secondary rounded-3" type="submit">
-                <svg class="bi me-1" width="16" height="16"><use xlink:href="#github"></use></svg>
-                Sign up with GitHub
-              </button>
-            </form>
-          </div>
+  <div class="modal fade p-5" tabindex="-1" role="dialog" id="modalAddCard">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content rounded-4 shadow">
+        <div class="modal-header p-5 pb-4 border-bottom-0">
+          <h1 class="fw-bold mb-0 fs-2">Inscription/Connexion</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+  
+        <div class="modal-body p-5 pt-0">
+          <form class="">
+            <div class="form-floating mb-3">
+              <input type="email" class="form-control rounded-3" id="floatingInput" placeholder="name@example.com">
+              <label for="floatingInput">Adresse e-mail</label>
+            </div>
+            <div class="form-floating mb-3">
+              <input type="password" class="form-control rounded-3" id="floatingPassword" placeholder="Password">
+              <label for="floatingPassword">Mot de passe</label>
+            </div>
+            <button class="w-100 mb-2 btn btn-lg rounded-3 btn-primary" type="submit">Inscription</button>
+            <button id="userlogin" class="w-100 mb-2 btn btn-lg rounded-3 btn-primary" type="button">Connexion</button>
+            <small>En cliquant sur Inscription, vous acceptez les conditions d'utilisation.</small>
+            <hr class="my-4">
+            <h2 class="fs-5 fw-bold mb-3">Si vous êtes un administrateur ...</h2>
+            <div class="form-floating mb-3">
+              <input type="password" class="form-control rounded-3" id="floatingPassword" placeholder="Password">
+              <label for="floatingPassword">Mot de passe administrateur</label>
+            </div>
+            <button id="adminlogin" class="w-100 mb-2 btn btn-lg rounded-3 btn-primary" type="button">Connexion</button>
+          </form>
         </div>
       </div>
     </div>
-    <!-- Sign up template end -->
+  </div>
+
+    <div class="bg-body-secondary">
+      <form class="d-flex rounded-3" role="search">
+        <label for="exampleSelect" class="form-label visually-hidden">Select menu</label>
+        <select class="form-select m-2 p-2" id="exampleSelect">
+          <option selected="">Open this select menu</option>
+          <option value="1">One</option>
+          <option value="2">Two</option>
+          <option value="3">Three</option>
+        </select>
+      <input class="form-control m-2 p-2" type="search" placeholder="Search" aria-label="Search">
+      <button class="btn btn-outline-success m-2 p-2" type="submit">Search</button>
+    </form>
+
+      <label for="exampleSelect" class="form-label visually-hidden">Select menu</label>
+              <select class="form-select" id="exampleSelect">
+                <option selected="">Open this select menu</option>
+                <option value="1">One</option>
+                <option value="2">Two</option>
+                <option value="3">Three</option>
+              </select>
+    </div>
+
     <div class="bg-body-tertiary p-5 rounded mb-5">
       <div class="row" data-masonry="{&quot;percentPosition&quot;: true }">
 
@@ -331,17 +353,15 @@
         <div class="col-sm-6 col-lg-4 mb-4">
             <div class="card">
                 <div class="btn btn-sm btn-outline-secondary">
-                    <a href="#" class="stretched-link card-text" aria-label="Add" style="text-decoration: none; color: inherit; font-size: 2rem;">
+                    <a id="add" data-bs-toggle="modal" data-bs-target="#modalAddCard" href="#" class="stretched-link card-text" aria-label="Add" style="text-decoration: none; color: inherit; font-size: 2rem;">
                         +
                         <span class="visually-hidden">Add</span>
                     </a>
                 </div>
+                
             </div>
         </div>
         <!-- addition card template end -->
-        
-        
-        
 
       </div>
 
@@ -381,7 +401,9 @@
     
             card.classList.add(...classes);
         });
-    
+
+        var addElement = document.getElementById("add");
+
         });
 </script>
     </body>
