@@ -58,12 +58,20 @@ app.post('/register', async (req, res) => {
         return res.status(400).json({ message: 'All fields are required' });
     }
 
-    const hashedPassword = await bcrypt.hash(password, 10);
-    
-    connection.query('INSERT INTO users (username, email, password, role) VALUES (?, ?, ?, ?)', 
-    [username, email, hashedPassword, role || 'user'], (err, results) => {
+    // 检查电子邮件是否已存在
+    connection.query('SELECT * FROM users WHERE email = ?', [email], async (err, results) => {
         if (err) return res.status(500).json({ message: err.message });
-        res.status(201).json({ message: 'User registered' });
+        if (results.length > 0) {
+            return res.status(400).json({ message: 'Email already registered' });
+        }
+
+        const hashedPassword = await bcrypt.hash(password, 10);
+        
+        connection.query('INSERT INTO users (username, email, password, role) VALUES (?, ?, ?, ?)', 
+        [username, email, hashedPassword, role || 'user'], (err, results) => {
+            if (err) return res.status(500).json({ message: err.message });
+            res.status(201).json({ message: 'User registered' });
+        });
     });
 });
 
