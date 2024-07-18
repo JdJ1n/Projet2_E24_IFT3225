@@ -1,33 +1,8 @@
-// document.addEventListener('DOMContentLoaded', (event) => {
 
-//     var userlogin = document.getElementById("userlogin");
-
-//     userlogin.addEventListener('click', function () {
-//     window.location.href = "user_page.html";
-//     });
-
-//     var adminlogin = document.getElementById("adminlogin");
-
-//     adminlogin.addEventListener('click', function () {
-//     window.location.href = "admin_page.html";
-//     });
-
-//     var colors = ['bg-primary text-white', 'bg-secondary text-white', 'bg-success text-white', 'bg-danger text-white', 'bg-warning text-dark', 'bg-info text-dark', 'bg-light text-dark', 'bg-dark text-white'];
-
-//     var cards = document.querySelectorAll('.card-body');
-
-//     cards.forEach(function(card) {
-//         var color = colors[Math.floor(Math.random() * colors.length)];
-//         var classes = color.split(' ');
-
-//         card.classList.add(...classes);
-//     });
-
-//     });
 
 document.addEventListener('DOMContentLoaded', (event) => {
-    var userlogin = document.getElementById("userlogin");
-    var adminlogin = document.getElementById("adminlogin");
+    var userlogin = document.getElementById("userlogin");//btn
+    var adminlogin = document.getElementById("adminlogin");//btn
 
     userlogin.addEventListener('click', async function () {
         const email = document.getElementById('floatingInput').value;
@@ -50,6 +25,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
         if (data.token) {
             localStorage.setItem('token', data.token);
             alert('Login successful');
+            //customize here
             window.location.href = "user_page.html";
         } else {
             alert(data.message);
@@ -58,7 +34,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
 
     adminlogin.addEventListener('click', async function () {
         const password = document.getElementById('adminPassword').value;
-        const email = 'admin@admin.com'; // 预定义的管理员邮箱
+        const email = 'admin@admin.com'; 
 
         if (!password) {
             alert("Password is required");
@@ -77,13 +53,14 @@ document.addEventListener('DOMContentLoaded', (event) => {
         if (data.token) {
             localStorage.setItem('token', data.token);
             alert('Admin Login successful');
+            //customize here
             window.location.href = "admin_page.html";
         } else {
             alert(data.message);
         }
     });
 
-    document.querySelector('.btn-primary[type="submit"]').addEventListener('click', async (e) => {
+    document.getElementById("userSignup").addEventListener('click', async (e) => {
         e.preventDefault();
         const email = document.getElementById('floatingInput').value;
         const password = document.getElementById('floatingPassword').value;
