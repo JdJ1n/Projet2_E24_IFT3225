@@ -252,7 +252,7 @@
   <!-- Sign up template -->
 
   <div class="bg-body-tertiary p-5 rounded">
-    <div class="row" data-masonry="{&quot;percentPosition&quot;: true }">
+    <div id="card-contents" class="row" data-masonry="{&quot;percentPosition&quot;: true }">
       <!-- cards elements start here -->
 
 
@@ -361,9 +361,25 @@
   </div>
 </main>
 
+
+<script src="script.js"></script>
+<script>
+
+
+  var colors = ['bg-primary text-white', 'bg-secondary text-white', 'bg-success text-white', 'bg-danger text-white', 'bg-warning text-dark', 'bg-info text-dark', 'bg-light text-dark', 'bg-dark text-white'];
+
+  var cardbgs = document.querySelectorAll('.card-body');
+
+  cardbgs.forEach(function(card) {
+      var color = colors[Math.floor(Math.random() * colors.length)];
+      var classes = color.split(' ');
+
+      cardbgs.classList.add(...classes);
+  });
+</script>
+
 <script src="assets/dist/js/bootstrap.bundle.min.js"></script>
 
 <script async="" src="masonry.pkgd.min.js"></script>
-<script src="script.js"></script>
     </body>
 </html>

@@ -1,6 +1,6 @@
 
 
-document.addEventListener('DOMContentLoaded', (event) => {
+document.addEventListener('DOMContentLoaded', async (event) => {
     var userlogin = document.getElementById("userlogin");//btn
     var adminlogin = document.getElementById("adminlogin");//btn
 
@@ -81,16 +81,39 @@ document.addEventListener('DOMContentLoaded', (event) => {
         alert(data.message);
     });
 
-    var colors = ['bg-primary text-white', 'bg-secondary text-white', 'bg-success text-white', 'bg-danger text-white', 'bg-warning text-dark', 'bg-info text-dark', 'bg-light text-dark', 'bg-dark text-white'];
 
-    var cards = document.querySelectorAll('.card-body');
+    try {
+        const response = await fetch('/random-cards');
+        const cards = await response.json();
 
-    cards.forEach(function(card) {
-        var color = colors[Math.floor(Math.random() * colors.length)];
-        var classes = color.split(' ');
+        const cardContainer = document.getElementById('card-contents');
 
-        card.classList.add(...classes);
-    });
+        cards.forEach(card => {
+            const cardElement = document.createElement('div');
+            cardElement.className = 'col-sm-6 col-lg-4 mb-4 rounded';
+            cardElement.innerHTML = `
+                <div class="card rounded">
+                    <div class="bd-placeholder-img card-img-top">
+                        <img class="rounded-top" src=${card.url} alt="${card.name}" height="100%" width="100%" class="bd-placeholder-img">
+                    </div>
+                    <div class="card-body rounded-bottom">
+                        <h4 class="card-title">${card.name}</h4>
+                        <h5 class="card-text">${card.category_id}</h5>
+                        <p class="card-text">${card.description}</p>
+                        <p class="card-text"><small>created by ${card.user_id}</small></p>
+                    </div>
+                </div>
+            `;
+            cardContainer.appendChild(cardElement);
+        });
+    } catch (err) {
+        console.error(err);
+    }
+    
+
+    
+
+    
 });
 
 

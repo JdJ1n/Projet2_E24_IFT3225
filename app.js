@@ -95,6 +95,14 @@ app.get('/card', authenticateToken, (req, res) => {
     });
 });
 
+// get random cards
+app.get('/random-cards', (req, res) => {
+    connection.query('SELECT * FROM card ORDER BY RAND() LIMIT 5', (err, results) => {
+        if (err) return res.status(500).json({ message: err.message });
+        res.json(results);
+    });
+});
+
 // jwt auth
 function authenticateToken(req, res, next) {
     const token = req.headers['authorization'];
