@@ -1,6 +1,6 @@
 require("dotenv").config();
 const express = require('express');
-const mysql = require('mysql2');
+const mysql = require('mysql2/promise'); // Use mysql2/promise instead of mysql2
 const bodyParser = require('body-parser');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
@@ -8,9 +8,7 @@ const path = require('path');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
-const secretKey = 'your_secret_key';
-const adminEmail = 'admin@admin.com';
-const adminPassword = 'ift3225';
+const secretKey = process.env.SECRET_KEY;
 
 app.use(express.static('public'));
 
@@ -20,19 +18,11 @@ app.use(bodyParser.json());
 app.use(express.static(path.join(__dirname, 'public')));
 
 // db connection
-const connection = mysql.createConnection({
+const pool = mysql.createPool({ // Use createPool instead of createConnection
     host: process.env.DB_HOST,
     user: process.env.DB_USER,
     password: process.env.DB_PASS,
     database: process.env.DB_NAME
-});
-
-connection.connect((err) => {
-    if (err) {
-        console.error('Database connection failed:', err.stack);
-        return;
-    }
-    console.log('Connected to MySQL');
 });
 
 // register
@@ -44,71 +34,87 @@ app.post('/register', async (req, res) => {
     }
 
     // check if email already registered
-    connection.query('SELECT * FROM users WHERE email = ?', [email], async (err, results) => {
-        if (err) return res.status(500).json({ message: err.message });
-        if (results.length > 0) {
-            return res.status(400).json({ message: 'Email already registered' });
-        }
+    const [users] = await pool.query('SELECT * FROM users WHERE email = ?', [email]);
+    if (users.length > 0) {
+        return res.status(400).json({ message: 'Email already registered' });
+    }
 
-        const hashedPassword = await bcrypt.hash(password, 10);
-        
-        connection.query('INSERT INTO users (username, email, password, role) VALUES (?, ?, ?, ?)', 
-        [username, email, hashedPassword, role || 'user'], (err, results) => {
-            if (err) return res.status(500).json({ message: err.message });
-            res.status(201).json({ message: 'User registered' });
-        });
-    });
+    const hashedPassword = await bcrypt.hash(password, 10);
+    
+    await pool.query('INSERT INTO users (username, email, password, role) VALUES (?, ?, ?, ?)', 
+    [username, email, hashedPassword, role || 'user']);
+    res.status(201).json({ message: 'User registered' });
 });
 
 // login
 app.post('/login', async (req, res) => {
     const { email, password } = req.body;
 
-    //admin login
-    if (email === adminEmail && password === adminPassword) {
-        const adminToken = jwt.sign({ id: 0, role: 'admin' }, secretKey, { expiresIn: '1h' });
-        return res.json({ token: adminToken });
-    }
-
-    // users login
     if (!email || !password) {
+        console.log('Login failed: All fields are required');
         return res.status(400).json({ message: 'All fields are required' });
     }
     
-    connection.query('SELECT * FROM users WHERE email = ?', [email], async (err, results) => {
-        if (err) return res.status(500).json({ message: err.message });
-        if (results.length === 0) return res.status(400).json({ message: 'User not found' });
+    const [users] = await pool.query('SELECT * FROM users WHERE email = ?', [email]);
+    if (users.length === 0) {
+        console.log('Login failed: User not found');
+        return res.status(400).json({ message: 'User not found' });
+    }
 
-        const user = results[0];
-        const isPasswordValid = await bcrypt.compare(password, user.password);
+    const user = users[0];
+    const isPasswordValid = await bcrypt.compare(password, user.password);
 
-        if (!isPasswordValid) {
-            return res.status(400).json({ message: 'Invalid password' });
-        }
+    if (!isPasswordValid) {
+        console.log('Login failed: Invalid password');
+        return res.status(400).json({ message: 'Invalid password' });
+    }
 
-        const token = jwt.sign({ id: user.id, role: user.role }, secretKey, { expiresIn: '1h' });
-        res.json({ token });
-    });
+    const token = jwt.sign({ id: user.id,name:user.username, role: user.role }, secretKey, { expiresIn: '1h' });
+    // Save the token in the database
+    await pool.query('UPDATE users SET authToken = ? WHERE id = ?', [token, user.id]);
+    console.log('Login successful:', user);
+    res.json({ token });
 });
 
+// logout
+app.post('/logout', authenticateToken, async (req, res) => {
+    try {
+        // Remove the token from the database
+        await pool.query('UPDATE users SET authToken = NULL WHERE id = ?', [req.user.id]);
+        console.log('Logout successful:', req.user);
+        res.json({ message: 'User logged out' });
+    } catch (err) {
+        console.log('Logout failed:', err.message);
+        res.status(500).json({ message: err.message });
+    }
+});
+
+// user page
+app.get('/user_page', authenticateToken, async (req, res) => {
+    try {
+        // If the user is authenticated and their role is 'user', send an OK status
+        res.status(200).json({ message: 'OK' });
+    } catch (err) {
+        console.error('Failed to load user page:', err.message);
+        res.status(500).json({ message: err.message });
+    }
+});
+
+
 // acquire card
-app.get('/card', authenticateToken, (req, res) => {
-    connection.query('SELECT * FROM task WHERE user_id = ?', [req.user.id], (err, results) => {
-        if (err) throw err;
-        res.json(results);
-    });
+app.get('/card', authenticateToken, async (req, res) => {
+    const [tasks] = await pool.query('SELECT * FROM task WHERE user_id = ?', [req.user.id]);
+    res.json(tasks);
 });
 
 // get random cards
-app.get('/cards', (req, res) => {
-    connection.query('SELECT * FROM card ORDER BY RAND() LIMIT 15', (err, results) => {
-        if (err) return res.status(500).json({ message: err.message });
-        res.json(results);
-    });
+app.get('/cards', async (req, res) => {
+    const [cards] = await pool.query('SELECT * FROM card ORDER BY RAND() LIMIT 15');
+    res.json(cards);
 });
 
 // random cards for index.html
-app.get('/random-cards', (req, res) => {
+app.get('/random-cards', async (req, res) => {
     const query = `
         SELECT card.*, category.name AS category_name, users.email AS user_email
         FROM card
@@ -118,15 +124,9 @@ app.get('/random-cards', (req, res) => {
         LIMIT 15
     `;
 
-    connection.query(query, (err, results) => {
-        if (err) {
-            console.error(err);
-            return res.status(500).json({ message: err.message });
-        }
-        res.json(results);
-    });
+    const [cards] = await pool.query(query);
+    res.json(cards);
 });
-
 
 // jwt auth
 function authenticateToken(req, res, next) {
@@ -134,12 +134,28 @@ function authenticateToken(req, res, next) {
 
     if (!token) return res.sendStatus(401);
 
-    jwt.verify(token, secretKey, (err, user) => {
+    jwt.verify(token, secretKey, async (err, user) => {
         if (err) return res.sendStatus(403);
+        // Check if the token exists in the database
+        const [users] = await pool.query('SELECT * FROM users WHERE id = ? AND authToken = ?', [user.id, token]);
+        if (users.length === 0) return res.sendStatus(403);
         req.user = user;
         next();
     });
 }
+
+// clear tokens
+app.post('/clear-tokens', async (req, res) => {
+    try {
+        // Clear all authTokens in the database
+        await pool.query('UPDATE users SET authToken = NULL');
+        console.log('All authTokens cleared');
+        res.json({ message: 'All authTokens cleared' });
+    } catch (err) {
+        console.error('Failed to clear authTokens:', err.message);
+        res.status(500).json({ message: err.message });
+    }
+});
 
 // Error handling middleware
 app.use((err, req, res, next) => {
@@ -155,5 +171,3 @@ app.listen(PORT, (err) => {
     }
     console.log(`Server is running on port ${PORT}`);
 });
-
-

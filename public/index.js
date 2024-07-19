@@ -1,82 +1,94 @@
 document.addEventListener('DOMContentLoaded', async (event) => {
+
+    async function clearTokens() {
+        try {
+            // Send a request to the server to clear all authTokens in the database
+            await fetch('/clear-tokens', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            // Clear the token in the localStorage
+            localStorage.removeItem('token');
+        } catch (err) {
+            console.error(err);
+        }
+    }
+    // Call the function to clear tokens
+    clearTokens();
+
+    async function login(email,password) {
+        try {
+            const response = await fetch('/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ email, password })
+            });
+            const data = await response.json();
+    
+            if (data.token) {
+                localStorage.setItem('token', data.token);
+                alert('Login successful');
+                // Redirect to the server route instead of the file
+                window.location.href = "/private.html";
+            } else {
+                alert(data.message);
+            }
+        } catch (err) {
+            console.error(err);
+        }
+    }
+
     var userlogin = document.getElementById("userlogin");//btn
     var adminlogin = document.getElementById("adminlogin");//btn
 
     userlogin.addEventListener('click', async function () {
-        try {
             const email = document.getElementById('floatingInput').value;
             const password = document.getElementById('floatingPassword').value;
-
+    
             if (!email || !password) {
                 alert("All fields are required");
                 return;
             }
-
-            const response = await fetch('/login', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ email, password })
-            });
-            const data = await response.json();
-
-            if (data.token) {
-                localStorage.setItem('token', data.token);
-                alert('Login successful');
-                //customize here
-                window.location.href = "user_page.html";
-            } else {
-                alert(data.message);
-            }
-        } catch (err) {
-            console.error(err);
-        }
+            login(email,password);
     });
-
+    
     adminlogin.addEventListener('click', async function () {
-        try {
+        
             const password = document.getElementById('adminPassword').value;
             const email = 'admin@admin.com'; 
-
+    
             if (!password) {
                 alert("Password is required");
                 return;
             }
-
-            const response = await fetch('/login', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ email, password })
-            });
-            const data = await response.json();
-
-            if (data.token) {
-                localStorage.setItem('token', data.token);
-                alert('Admin Login successful');
-                //customize here
-                window.location.href = "admin_page.html";
-            } else {
-                alert(data.message);
-            }
-        } catch (err) {
-            console.error(err);
-        }
+    
+            login(email,password);
     });
+    
 
     document.getElementById("userSignup").addEventListener('click', async (e) => {
         e.preventDefault();
         try {
             const email = document.getElementById('floatingInput').value;
             const password = document.getElementById('floatingPassword').value;
-
+    
             if (!email || !password) {
                 alert("All fields are required");
                 return;
             }
-
+    
+            // Email format check
+            const emailRegex = /^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$/;
+            if (!emailRegex.test(email)) {
+                alert("Invalid email format");
+                return;
+            }
+    
             const response = await fetch('/register', {
                 method: 'POST',
                 headers: {
@@ -90,6 +102,7 @@ document.addEventListener('DOMContentLoaded', async (event) => {
             console.error(err);
         }
     });
+    
 
     try {
         const response = await fetch('/random-cards', {

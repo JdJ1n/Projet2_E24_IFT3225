@@ -2,10 +2,10 @@
 -- version 5.1.2
 -- https://www.phpmyadmin.net/
 --
--- Host: localhost:3306
--- Generation Time: Jul 17, 2024 at 12:33 AM
--- Server version: 5.7.24
--- PHP Version: 8.3.1
+-- 主机： localhost:3306
+-- 生成日期： 2024-07-19 06:28:20
+-- 服务器版本： 5.7.24
+-- PHP 版本： 8.3.1
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -18,13 +18,13 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Database: `tp2`
+-- 数据库： `tp2`
 --
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `card`
+-- 表的结构 `card`
 --
 
 CREATE TABLE `card` (
@@ -39,7 +39,7 @@ CREATE TABLE `card` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
--- Dumping data for table `card`
+-- 转存表中的数据 `card`
 --
 
 INSERT INTO `card` (`id`, `name`, `artist`, `category_id`, `user_id`, `date`, `description`, `url`) VALUES
@@ -62,7 +62,7 @@ INSERT INTO `card` (`id`, `name`, `artist`, `category_id`, `user_id`, `date`, `d
 -- --------------------------------------------------------
 
 --
--- Table structure for table `category`
+-- 表的结构 `category`
 --
 
 CREATE TABLE `category` (
@@ -71,7 +71,7 @@ CREATE TABLE `category` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
--- Dumping data for table `category`
+-- 转存表中的数据 `category`
 --
 
 INSERT INTO `category` (`id`, `name`) VALUES
@@ -93,7 +93,7 @@ INSERT INTO `category` (`id`, `name`) VALUES
 -- --------------------------------------------------------
 
 --
--- Table structure for table `users`
+-- 表的结构 `users`
 --
 
 CREATE TABLE `users` (
@@ -101,22 +101,27 @@ CREATE TABLE `users` (
   `username` varchar(50) NOT NULL,
   `email` varchar(100) NOT NULL,
   `password` varchar(255) NOT NULL,
-  `role` varchar(20) DEFAULT 'user'
+  `role` varchar(20) DEFAULT 'user',
+  `authToken` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
--- Dumping data for table `users`
+-- 转存表中的数据 `users`
 --
 
-INSERT INTO `users` (`id`, `username`, `email`, `password`, `role`) VALUES
-(3, 'zangyilin1997@gmail.com', 'zangyilin1997@gmail.com', '$2b$10$QsQMU/WReyJx83WFYYeyO.5rAsK9Z6dcBQFAvSFquSAB8T9cJOAYe', 'user');
+INSERT INTO `users` (`id`, `username`, `email`, `password`, `role`, `authToken`) VALUES
+(3, 'zangyilin1997@gmail.com', 'zangyilin1997@gmail.com', '$2b$10$QsQMU/WReyJx83WFYYeyO.5rAsK9Z6dcBQFAvSFquSAB8T9cJOAYe', 'user', NULL),
+(4, 'jjd1024@foxmail.com', 'jjd1024@foxmail.com', '$2b$10$KY.2DZZAMuSwhcj.d9EiQu/1pj49NSj3tZAD2AuRqfQME6O.sNLJu', 'user', NULL),
+(5, 'admin@admin.com', 'admin@admin.com', '$2b$10$2lxB/IYHiaZLHKB2sBCzL.OlyCm59RVtwE1vGsZmdPykBsdoSViPS', 'admin', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NSwibmFtZSI6ImFkbWluQGFkbWluLmNvbSIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTcyMTM3MDQwOSwiZXhwIjoxNzIxMzc0MDA5fQ.7BX2wCSgQXzziNI53xlCkF9CVp99i9ss60O1FGOkYvQ'),
+(6, 'j@j.com', 'j@j.com', '$2b$10$7mMSbITZeO7bMPwnKJxI7eG4eyla.AcGnnWiIodxmagJLpblTHX3C', 'user', NULL),
+(7, 'q@q.com', 'q@q.com', '$2b$10$WqryBTUTyh7mJq.e6TZ2buSx3Te0IJqcn/jfGFUTGiDNCVJx/DouG', 'user', NULL);
 
 --
--- Indexes for dumped tables
+-- 转储表的索引
 --
 
 --
--- Indexes for table `card`
+-- 表的索引 `card`
 --
 ALTER TABLE `card`
   ADD PRIMARY KEY (`id`),
@@ -124,45 +129,45 @@ ALTER TABLE `card`
   ADD KEY `user_id` (`user_id`);
 
 --
--- Indexes for table `category`
+-- 表的索引 `category`
 --
 ALTER TABLE `category`
   ADD PRIMARY KEY (`id`);
 
 --
--- Indexes for table `users`
+-- 表的索引 `users`
 --
 ALTER TABLE `users`
   ADD PRIMARY KEY (`id`);
 
 --
--- AUTO_INCREMENT for dumped tables
+-- 在导出的表使用AUTO_INCREMENT
 --
 
 --
--- AUTO_INCREMENT for table `card`
+-- 使用表AUTO_INCREMENT `card`
 --
 ALTER TABLE `card`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
 
 --
--- AUTO_INCREMENT for table `category`
+-- 使用表AUTO_INCREMENT `category`
 --
 ALTER TABLE `category`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 
 --
--- AUTO_INCREMENT for table `users`
+-- 使用表AUTO_INCREMENT `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
--- Constraints for dumped tables
+-- 限制导出的表
 --
 
 --
--- Constraints for table `card`
+-- 限制表 `card`
 --
 ALTER TABLE `card`
   ADD CONSTRAINT `card_ibfk_1` FOREIGN KEY (`category_id`) REFERENCES `category` (`id`),
