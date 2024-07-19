@@ -24,18 +24,29 @@ const bodyParser = require('body-parser');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const path = require('path');
+const http = require('http');
+const socketIo = require('socket.io');
+const cors = require('cors');
+
 
 const port = 8888;
 const app = express();
 const secretKey = 'your_secret_key';
 const adminEmail = 'admin@admin.com';
 const adminPassword = 'ift3225';
+const server = require('http').createServer(app);
+const io = socketIo(server);
 
+// 启用所有来源的 CORS 请求
+app.use(cors())
 // 使用 body-parser 中间件解析 JSON 数据
 app.use(bodyParser.json());
 
 // 设置静态文件目录
 app.use(express.static(path.join(__dirname, 'public')));
+
+// Serve static files from the "assets" directory
+app.use('/assets', express.static(path.join(__dirname, 'assets')));
 
 // 设置数据库连接
 const connection = mysql.createConnection({
@@ -48,6 +59,18 @@ const connection = mysql.createConnection({
 connection.connect((err) => {
     if (err) throw err;
     console.log('Connected to MySQL');
+});
+
+//add router
+// 路由配置
+// Route for index.html
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'views', 'index.html'));
+});
+
+// Route for user_page2.html
+app.get('/page2', (req, res) => {
+    res.sendFile(path.join(__dirname, 'views', 'user_page2.html'));
 });
 
 // 注册用户
@@ -126,6 +149,112 @@ function authenticateToken(req, res, next) {
         next();
     });
 }
+
+//-------------------------------------------ajout
+//liste tous les cartes
+app.get('/api/cards', (req, res) => {
+    connection.query('SELECT * FROM card', (err, results) => {
+        if (err) return res.status(500).json({ message: err.message });
+        res.json(results);
+    });
+});
+
+// //return a specifie card
+// app.get('/api/cards/:id', (req, res) => {
+//     const cardId = req.params.id;
+//     connection.query('SELECT * FROM card WHERE id = ?', [cardId], (err, results) => {
+//         if (err) return res.status(500).json({ message: err.message });
+//         if (results.length === 0) return res.status(404).json({ message: 'Card not found' });
+//         res.json(results[0]);
+//     });
+// });
+
+
+// //delete card
+// app.delete('/api/cards/:id', (req, res) => {
+//     const cardId = req.params.id;
+//     connection.query('DELETE FROM card WHERE id = ?', [cardId], (err, results) => {
+//         if (err) return res.status(500).json({ message: err.message });
+//         if (results.affectedRows === 0) return res.status(404).json({ message: 'Card not found' });
+//         res.json({ message: 'Card deleted successfully' });
+
+//         // 广播卡片删除事件
+//         io.emit('cardDeleted', cardId);
+//     });
+// });
+
+// 添加卡片--------------------------------------------------------------------------------------
+app.post('/api/cardstest', (req, res) => {
+    // const cardData = {
+    //     name: 'Test Album',
+    //     artist: 'Test Artist',
+    //     category_id: 1,
+    //     user_id: 3,
+    //     date: '2023-07-18',
+    //     description: 'Test description',
+    //     url: 'https://example.com/image.jpg'
+    // };
+
+    // const query = 'INSERT INTO card (name, artist, category_id, user_id, date, description, url) VALUES (?, ?, ?, ?, ?, ?, ?)';
+    // const values = [cardData.name, cardData.artist, cardData.category_id, cardData.user_id, cardData.date, cardData.description, cardData.url];
+
+    // connection.query(query, values, (err, results) => {
+    //     if (err) {
+    //         console.error('Error inserting data:', err);
+    //         res.status(500).json({ message: 'Error inserting data' });
+    //         return;
+    //     }
+    //     console.log('Card added, ID:', results.insertId);
+    //     res.status(200).json({ message: 'Card added', id: results.insertId });
+    // });
+    //-------------------------------------------------------------
+    const cardData = req.body;
+    // if (!name || !artist || !category_id || !user_id || !date || !url) {
+    //     return res.status(400).json({ message: 'All fields except description are required' });
+    // }
+    const query = 'INSERT INTO card (name, artist, category_id, user_id, date, description, url) VALUES (?, ?, ?, ?, ?, ?, ?)';
+    const values = [cardData.name, cardData.artist, cardData.category_id, cardData.user_id, cardData.date, cardData.description, cardData.url];
+
+    connection.query(query, values, (err, results) => {
+        if (err) {
+            console.error('Error inserting data:', err);
+            res.status(500).json({ message: 'Error inserting data' });
+            return;
+        }
+        console.log('Card added, ID:', results.insertId);
+        res.status(201).json({ message: 'Card added', cardId: results.insertId });
+
+        // Broadcast card added event
+        io.emit('cardAdded', { id: results.insertId, name, artist, category_id, user_id, date, description, url });
+    });
+});
+
+// //update (edit)card
+// app.put('/api/cards/:id', (req, res) => {
+//     const cardId = req.params.id;
+//     const { name, artist, category_id, user_id, date, description, url } = req.body;
+
+//     // 检查必需的字段
+//     if (!name || !artist || !category_id || !user_id || !date || !url) {
+//         return res.status(400).json({ message: 'All fields are required' });
+//     }
+
+//     // 更新卡片信息
+//     connection.query(
+//         'UPDATE card SET name = ?, artist = ?, category_id = ?, user_id = ?, date = ?, description = ?, url = ? WHERE id = ?',
+//         [name, artist, category_id, user_id, date, description, url, cardId],
+//         (err, results) => {
+//             if (err) return res.status(500).json({ message: err.message });
+//             if (results.affectedRows === 0) return res.status(404).json({ message: 'Card not found' });
+//             res.json({ message: 'Card updated successfully' });
+
+//             // 广播卡片更新事件
+//             io.emit('cardUpdated', { id: cardId, name, artist, category_id, user_id, date, description, url });
+//         }
+//     );
+// });
+
+
 
 // 启动服务器
 app.listen(port, (err) => {

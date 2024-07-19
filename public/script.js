@@ -50,7 +50,8 @@ document.addEventListener('DOMContentLoaded', (event) => {
         if (data.token) {
             localStorage.setItem('token', data.token);
             alert('Login successful');
-            window.location.href = "user_page.html";
+            // window.location.href = "user_page.html";
+            window.location.href = "user_page2.html";
         } else {
             alert(data.message);
         }
