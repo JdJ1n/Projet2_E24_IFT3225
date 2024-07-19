@@ -28,7 +28,10 @@ const connection = mysql.createConnection({
 });
 
 connection.connect((err) => {
-    if (err) throw err;
+    if (err) {
+        console.error('Database connection failed:', err.stack);
+        return;
+    }
     console.log('Connected to MySQL');
 });
 
@@ -138,11 +141,17 @@ function authenticateToken(req, res, next) {
     });
 }
 
+// Error handling middleware
+app.use((err, req, res, next) => {
+    console.error(err.stack);
+    res.status(500).json({ message: 'An unexpected error occurred. Please try again later.' });
+});
+
 // start server
 app.listen(PORT, (err) => {
     if (err) {
-        console.error('err', err.stack);
-        throw err;
+        console.error('Server failed to start:', err.stack);
+        return;
     }
     console.log(`Server is running on port ${PORT}`);
 });
