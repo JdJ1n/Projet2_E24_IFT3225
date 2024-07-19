@@ -1,3 +1,4 @@
+require("dotenv").config();
 const express = require('express');
 const mysql = require('mysql2');
 const bodyParser = require('body-parser');
@@ -20,10 +21,10 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // db connection
 const connection = mysql.createConnection({
-    host: 'localhost',
-    user: 'root',
-    password: 'root',
-    database: 'tp2'
+    host: process.env.DB_HOST,
+    user: process.env.DB_USER,
+    password: process.env.DB_PASS,
+    database: process.env.DB_NAME
 });
 
 connection.connect((err) => {
@@ -96,12 +97,33 @@ app.get('/card', authenticateToken, (req, res) => {
 });
 
 // get random cards
-app.get('/random-cards', (req, res) => {
-    connection.query('SELECT * FROM card ORDER BY RAND() LIMIT 5', (err, results) => {
+app.get('/cards', (req, res) => {
+    connection.query('SELECT * FROM card ORDER BY RAND() LIMIT 15', (err, results) => {
         if (err) return res.status(500).json({ message: err.message });
         res.json(results);
     });
 });
+
+// random cards for index.html
+app.get('/random-cards', (req, res) => {
+    const query = `
+        SELECT card.*, category.name AS category_name, users.email AS user_email
+        FROM card
+        JOIN category ON card.category_id = category.id
+        JOIN users ON card.user_id = users.id
+        ORDER BY RAND() 
+        LIMIT 15
+    `;
+
+    connection.query(query, (err, results) => {
+        if (err) {
+            console.error(err);
+            return res.status(500).json({ message: err.message });
+        }
+        res.json(results);
+    });
+});
+
 
 // jwt auth
 function authenticateToken(req, res, next) {
