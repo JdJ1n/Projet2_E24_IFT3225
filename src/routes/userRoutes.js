@@ -5,10 +5,11 @@ const db = require('../services/mysql');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const authentification = require('../middlewares/auth');
+const asyncHandler = require('../middlewares/asyncHandler');
 const secretKey=process.env.SECRET_KEY;
 
 // register
-router.post('/register', async (req, res) => {
+router.post('/register', asyncHandler(async (req, res) => {
     const { username, email, password, role } = req.body;
 
     if (!username || !email || !password) {
@@ -26,10 +27,9 @@ router.post('/register', async (req, res) => {
     await db.query('INSERT INTO users (username, email, password, role) VALUES (?, ?, ?, ?)', 
     [username, email, hashedPassword, role || 'user']);
     res.status(201).json({ message: 'User registered' });
-});
+}));
 
-// login
-router.post('/login', async (req, res) => {
+router.post("/login", asyncHandler(async (req, res) => {
     const { email, password } = req.body;
 
     if (!email || !password) {
@@ -52,55 +52,38 @@ router.post('/login', async (req, res) => {
     }
 
     const token = jwt.sign({ id: user.id, name:user.username, role: user.role }, secretKey, { expiresIn: '24h' });
-    // Save the token in the database
     await db.query('UPDATE users SET authToken = ? WHERE id = ?', [token, user.id]);
 
-    // Retrieve the user from the database again
     const [updatedUsers] = await db.query('SELECT * FROM users WHERE id = ?', [user.id]);
     const updatedUser = updatedUsers[0];
 
     console.log('Login successful:', updatedUser);
     res.json({ token });
-});
+}));
 
 // logout
-router.post('/logout', authentification, async (req, res) => {
-    try {
+router.post('/logout', authentification, asyncHandler(async (req, res) => {
         // Remove the token from the database
         await db.query('UPDATE users SET authToken = NULL WHERE id = ?', [req.user.id]);
         console.log('Logout successful:', req.user);
         res.json({ message: 'User logged out' });
-    } catch (err) {
-        console.log('Logout failed:', err.message);
-        res.status(500).json({ message: err.message });
-    }
-});
+}));
 
 // clear tokens
-router.post('/clear-tokens', async (req, res) => {
-    try {
+router.post('/clearAllTokens', asyncHandler(async (req, res) => {
         // Clear all authTokens in the database
         await db.query('UPDATE users SET authToken = NULL');
         console.log('All authTokens cleared');
         res.json({ message: 'All authTokens cleared' });
-    } catch (err) {
-        console.error('Failed to clear authTokens:', err.message);
-        res.status(500).json({ message: err.message });
-    }
-});
+}));
 
-router.get('/user_page', authentification, async (req, res) => {
-    try {
+router.get('/user_page', authentification, asyncHandler(async (req, res) => {
         // Check if the user is authenticated and their role is 'user'
-        if (req.user.role == 'user'||'admin') {
+        if (req.user.role === 'user'||'admin') {
             res.status(200).json({ message: 'OK' });
         } else {
             res.status(403).json({ message: 'Forbidden' });
         }
-    } catch (err) {
-        console.error('Failed to load user page:', err.message);
-        res.status(500).json({ message: err.message });
-    }
-});
+}));
 
 module.exports = router;

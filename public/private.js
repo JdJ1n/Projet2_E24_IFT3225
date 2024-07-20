@@ -31,11 +31,32 @@ document.addEventListener('DOMContentLoaded', async (event) => {
 
             var addElement = document.getElementById("add");
 
-            /*var backtologin = document.getElementById("backtologin");
+            var backtologin = document.getElementById("logout");
 
-            backtologin.addEventListener('click', function () {
-                window.location.href = "index.html";
-            });*/
+            backtologin.addEventListener('click', async function () {
+                try {
+                    const token = localStorage.getItem('token');
+                    const response = await fetch('/user/logout', {
+                        method: 'POST',
+                        headers: {
+                            'Authorization': 'Bearer ' + token
+                        }
+                    });
+
+                    if (response.ok) {
+                        localStorage.removeItem('token');
+                        window.location.href = "index.html";
+                    } else {
+                        const errorData = await response.json();
+                        alert('Failed to log out: ' + errorData.message);
+                    }
+                } catch (err) {
+                    console.error('Failed to log out:', err);
+                    alert('An error occurred while logging out. Please try again later.');
+                }
+            });
+
+
         } else {
             const errorData = await response.json();
             alert('Failed to load page: ' + errorData.message);

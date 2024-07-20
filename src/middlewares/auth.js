@@ -16,8 +16,10 @@ const authentification = async (req, res, next) => {
         } catch (e) {
             if (e instanceof jwt.TokenExpiredError) {
                 await db.query('UPDATE users SET authToken = NULL WHERE authToken = ?', [authToken]);
+                res.status(401).send("Your session has expired. Please log in again.");
+            } else {
+                throw e;
             }
-            throw e;
         }
     } catch (e) {
         res.status(401).send("Merci de vous authentifier");

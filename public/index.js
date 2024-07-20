@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', async (event) => {
 
-    async function clearTokens() {
+    /*async function clearTokens() {
         try {
             // Send a request to the server to clear all authTokens in the database
             await fetch('/user/clear-tokens', {
@@ -17,7 +17,7 @@ document.addEventListener('DOMContentLoaded', async (event) => {
         }
     }
     // Call the function to clear tokens
-    clearTokens();
+    clearTokens();*/
 
     async function login(email,password) {
         try {
@@ -32,12 +32,10 @@ document.addEventListener('DOMContentLoaded', async (event) => {
     
             if (data.token) {
                 localStorage.setItem('token', data.token);
-                // Check if the token is stored and log the result
                 const storedToken = localStorage.getItem('token');
                 console.log('Stored token:', storedToken);
     
                 alert('Login successful');
-                // Redirect to the server route instead of the file
                 window.location.href = "/private.html";
             } else {
                 alert(data.message);
@@ -46,33 +44,24 @@ document.addEventListener('DOMContentLoaded', async (event) => {
             console.error(err);
         }
     }
-
-    var userlogin = document.getElementById("userlogin");//btn
-    var adminlogin = document.getElementById("adminlogin");//btn
-
-    userlogin.addEventListener('click', async function () {
-            const email = document.getElementById('floatingInput').value;
-            const password = document.getElementById('floatingPassword').value;
+    
+    function addLoginEventListener(buttonId, getEmail, getPassword) {
+        const button = document.getElementById(buttonId);
+        button.addEventListener('click', async function () {
+            const email = getEmail();
+            const password = getPassword();
     
             if (!email || !password) {
                 alert("All fields are required");
                 return;
             }
-            login(email,password);
-    });
     
-    adminlogin.addEventListener('click', async function () {
-        
-            const password = document.getElementById('adminPassword').value;
-            const email = 'admin@admin.com'; 
+            login(email, password);
+        });
+    }
     
-            if (!password) {
-                alert("Password is required");
-                return;
-            }
-    
-            login(email,password);
-    });
+    addLoginEventListener("userlogin", () => document.getElementById('floatingInput').value, () => document.getElementById('floatingPassword').value);
+    addLoginEventListener("adminlogin", () => 'admin@admin.com', () => document.getElementById('adminPassword').value);
     
 
     document.getElementById("userSignup").addEventListener('click', async (e) => {
