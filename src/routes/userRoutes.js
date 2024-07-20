@@ -79,7 +79,7 @@ router.post('/clearAllTokens', asyncHandler(async (req, res) => {
 
 router.get('/user_page', authentification, asyncHandler(async (req, res) => {
         // Check if the user is authenticated and their role is 'user'
-        if (req.user.role === 'user'||'admin') {
+        if (req.user.role === 'user' || req.user.role === 'admin') {
             res.status(200).json({ message: 'OK' });
         } else {
             res.status(403).json({ message: 'Forbidden' });

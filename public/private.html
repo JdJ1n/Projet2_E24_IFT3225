@@ -10,7 +10,6 @@
   <title>Projet 2 IFT3225</title>
 
 <link href="assets/dist/css/bootstrap.min.css" rel="stylesheet">
-<link href="../node_modules/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
 
     <style>
       .bd-placeholder-img {
@@ -201,8 +200,8 @@
       </ul>
       <div class="d-lg-flex col-lg-3 justify-content-lg-end">
           <form class="d-flex rounded-3" role="search">
-              <label for="exampleSelect" class="form-label visually-hidden">Select menu</label>
-              <select class="form-select" id="exampleSelect">
+              <label for="exampleSelect1" class="form-label visually-hidden">Select menu</label>
+              <select class="form-select" id="exampleSelect1">
                 <option selected="">Open this select menu</option>
                 <option value="1">One</option>
                 <option value="2">Two</option>
@@ -247,7 +246,7 @@
             <hr class="my-4">
             <h2 class="fs-5 fw-bold mb-3">Si vous êtes un administrateur ...</h2>
             <div class="form-floating mb-3">
-              <input type="password" class="form-control rounded-3" id="floatingPassword" placeholder="Password">
+              <input type="password" class="form-control rounded-3" id="floatingPassword2" placeholder="Password">
               <label for="floatingPassword">Mot de passe administrateur</label>
             </div>
             <button id="adminlogin" class="w-100 mb-2 btn btn-lg rounded-3 btn-primary" type="button">Connexion</button>
@@ -381,29 +380,5 @@
 </main>
 <script src="assets/dist/js/bootstrap.bundle.min.js"></script>
 <script async="" src="private.js"></script>
-<!--<script>
-    document.addEventListener('DOMContentLoaded', (event) => {
-
-        var backtologin = document.getElementById("backtologin");
-    
-        backtologin.addEventListener('click', function () {
-        window.location.href = "index.html";
-        });
-    
-        var colors = ['bg-primary text-white','bg-success text-white', 'bg-danger text-white', 'bg-warning text-dark', 'bg-info text-dark', 'bg-light text-dark', 'bg-dark text-white'];
-    
-        var cards = document.querySelectorAll('.card-body');
-    
-        cards.forEach(function(card) {
-            var color = colors[Math.floor(Math.random() * colors.length)];
-            var classes = color.split(' ');
-    
-            card.classList.add(...classes);
-        });
-
-        var addElement = document.getElementById("add");
-
-        });
-</script>-->
     </body>
 </html>
