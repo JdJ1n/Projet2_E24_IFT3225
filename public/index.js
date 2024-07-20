@@ -3,7 +3,7 @@ document.addEventListener('DOMContentLoaded', async (event) => {
     async function clearTokens() {
         try {
             // Send a request to the server to clear all authTokens in the database
-            await fetch('/clear-tokens', {
+            await fetch('/user/clear-tokens', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -21,7 +21,7 @@ document.addEventListener('DOMContentLoaded', async (event) => {
 
     async function login(email,password) {
         try {
-            const response = await fetch('/login', {
+            const response = await fetch('/user/login', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -32,6 +32,10 @@ document.addEventListener('DOMContentLoaded', async (event) => {
     
             if (data.token) {
                 localStorage.setItem('token', data.token);
+                // Check if the token is stored and log the result
+                const storedToken = localStorage.getItem('token');
+                console.log('Stored token:', storedToken);
+    
                 alert('Login successful');
                 // Redirect to the server route instead of the file
                 window.location.href = "/private.html";
@@ -89,7 +93,7 @@ document.addEventListener('DOMContentLoaded', async (event) => {
                 return;
             }
     
-            const response = await fetch('/register', {
+            const response = await fetch('/user/register', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -105,7 +109,7 @@ document.addEventListener('DOMContentLoaded', async (event) => {
     
 
     try {
-        const response = await fetch('/random-cards', {
+        const response = await fetch('/card/random-cards', {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json'
