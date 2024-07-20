@@ -56,7 +56,7 @@ document.addEventListener('DOMContentLoaded', async (event) => {
                 return;
             }
     
-            login(email, password);
+            await login(email, password);
         });
     }
     
