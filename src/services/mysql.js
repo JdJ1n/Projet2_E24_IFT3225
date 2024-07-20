@@ -9,6 +9,8 @@ const pool = mysql.createPool({
     port: process.env.DB_PORT
 });
 
+console.log(`Connected to database at host ${process.env.DB_HOST} on port ${process.env.DB_PORT}`);
+
 pool.on('connect', (connection) => {
     console.log(`Connected to database with ID ${connection.threadId} at ${new Date()}`);
 });
