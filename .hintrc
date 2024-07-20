@@ -4,10 +4,11 @@
   ],
   "hints": {
     "compat-api/css": [
-      "default",
+      "off",
       {
         "ignore": [
-          "-webkit-overflow-scrolling"
+          "text-align: -webkit-match-parent",
+          "text-underline-offset"
         ]
       }
     ]
