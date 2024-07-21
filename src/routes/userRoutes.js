@@ -69,8 +69,15 @@ router.post('/logout', authentification, asyncHandler(async (req, res) => {
     res.json({ message: 'User logged out' });
 }));
 
+// get active user
+router.get('/active_user', authentification, asyncHandler(async (req, res) => {
+    console.log("Active User", req.user);
+    const [users] = await db.query('SELECT * FROM users WHERE id = ?', [req.user.id]);
+    res.json(users[0]);
+}));
+
 // clear tokens
-router.post('/clearAllTokens', asyncHandler(async (req, res) => {
+router.post('/clear_all_tokens', asyncHandler(async (req, res) => {
     // Clear all authTokens in the database
     await db.query('UPDATE users SET authToken = NULL');
     console.log('All authTokens cleared');

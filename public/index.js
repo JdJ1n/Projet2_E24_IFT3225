@@ -1,46 +1,5 @@
 document.addEventListener('DOMContentLoaded', async (event) => {
 
-    async function login(email, password) {
-        try {
-            const response = await fetch('/user/login', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ email, password })
-            });
-            const data = await response.json();
-
-            if (data.token) {
-                localStorage.setItem('token', data.token);
-                const storedToken = localStorage.getItem('token');
-                console.log('Stored token:', storedToken);
-
-                alert('Login successful');
-                window.location.href = "/private.html";
-            } else {
-                alert(data.message);
-            }
-        } catch (err) {
-            console.error(err);
-        }
-    }
-
-    function addLoginEventListener(buttonId, getEmail, getPassword) {
-        const button = document.getElementById(buttonId);
-        button.addEventListener('click', async function () {
-            const email = getEmail();
-            const password = getPassword();
-
-            if (!email || !password) {
-                alert("All fields are required");
-                return;
-            }
-
-            await login(email, password);
-        });
-    }
-
     addLoginEventListener("userlogin", () => document.getElementById('floatingInput').value, () => document.getElementById('floatingPassword').value);
     addLoginEventListener("adminlogin", () => 'admin@admin.com', () => document.getElementById('adminPassword').value);
 
@@ -78,7 +37,7 @@ document.addEventListener('DOMContentLoaded', async (event) => {
 
 
     try {
-        const response = await fetch('/card/random-cards', {
+        const response = await fetch('/card/random_cards', {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json'
@@ -125,3 +84,43 @@ document.addEventListener('DOMContentLoaded', async (event) => {
         console.error(err);
     }
 });
+
+async function login(email, password) {
+    try {
+        const response = await fetch('/user/login', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ email, password })
+        });
+        const data = await response.json();
+
+        if (data.token) {
+            localStorage.setItem('token', data.token);
+            const storedToken = localStorage.getItem('token');
+            console.log('Stored token:', storedToken);
+
+            alert('Login successful');
+            window.location.href = "/private.html";
+        } else {
+            alert(data.message);
+        }
+    } catch (err) {
+        console.error(err);
+    }
+}
+
+function addLoginEventListener(buttonId, getEmail, getPassword) {
+    const button = document.getElementById(buttonId);
+    button.addEventListener('click', async function () {
+        const email = getEmail();
+        const password = getPassword();
+
+        if (!email || !password) {
+            alert("All fields are required");
+            return;
+        }
+        await login(email, password);
+    });
+}

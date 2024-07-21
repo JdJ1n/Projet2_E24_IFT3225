@@ -17,8 +17,8 @@ router.get('/cards', asyncHandler(async (req, res) => {
     res.json(cards);
 }));
 
-// random cards for index.html
-router.get('/random-cards', asyncHandler(async (req, res) => {
+// random 15 cards for index.html
+router.get('/random_cards', asyncHandler(async (req, res) => {
     const query = `
         SELECT card.*, category.name AS category_name, users.email AS user_email
         FROM card
@@ -31,5 +31,18 @@ router.get('/random-cards', asyncHandler(async (req, res) => {
     const [cards] = await db.query(query);
     res.json(cards);
 }));
+
+router.get('/all_cards', asyncHandler(async (req, res) => {
+    const query = `
+        SELECT card.*, category.name AS category_name, users.email AS user_email
+        FROM card
+        JOIN category ON card.category_id = category.id
+        JOIN users ON card.user_id = users.id
+    `;
+
+    const [cards] = await db.query(query);
+    res.json(cards);
+}));
+
 
 module.exports = router;
