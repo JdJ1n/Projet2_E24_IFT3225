@@ -1,5 +1,3 @@
-var showUsersCards = false;
-
 document.addEventListener('DOMContentLoaded', async (event) => {
 
     try {
@@ -26,6 +24,7 @@ document.addEventListener('DOMContentLoaded', async (event) => {
             window.location.href = 'index.html';
             return;
         }
+
     } catch (err) {
         console.error('Failed to load page:', err);
         alert('An error occurred while loading the page. Please try again later.');
@@ -33,32 +32,47 @@ document.addEventListener('DOMContentLoaded', async (event) => {
         return;
     }
 
-    loadPage();
+    var _showUsersCards = false;
 
+    const token = localStorage.getItem('token');
+    loadPage(token);
+
+    Object.defineProperty(window, 'showUsersCards', {
+        get: function () {
+            return _showUsersCards;
+        },
+        set: async function (value) {
+            _showUsersCards = value;
+            await updatePage(token);
+        }
+    });
 });
 
-async function loadPage() {
+async function loadPage(token) {
     console.log("Page loading...")
 
-    const active_user = await getActiveUser();
+    const active_user = await getActiveUser(token);
 
-    var all_cards = await allCards();
-    var perPage = 10; 
+    var perPage = 10;
 
     await loadLogoutButton();
 
     await loadBar(active_user);
 
-    await updateContents(active_user);
-
-    await paintCards();
-
+    await updatePage(token);
     var addElement = document.getElementById("add");
 
     console.log("Page loaded!")
 }
 
-async function addNavBar(){
+async function updatePage(token) {
+    const active_user = await getActiveUser(token);
+    const all_cards = await allCards(token);
+    await updateContents(active_user, all_cards);
+    await paintCards();
+}
+
+async function addNavBar() {
     var usersCardsLink = document.getElementById('usersCards');
     var allCardsLink = document.getElementById('userPageAllCards');
     function handleUsersCardsClick() {
@@ -76,8 +90,7 @@ async function addNavBar(){
     allCardsLink.addEventListener('click', handleAllCardsClick);
 }
 
-async function getActiveUser() {
-    const token = localStorage.getItem('token');
+async function getActiveUser(token) {
     const active_user_response = await fetch('/user/active_user', {
         headers: {
             'Authorization': 'Bearer ' + token
@@ -153,16 +166,58 @@ async function loadLogoutButton() {
     });
 }
 
-async function updateContents(activeUser){
-    if(activeUser.role==='admin'){
+async function updateContents(activeUser, all_cards) {
+    const cardContainer = document.getElementById('card-contents');
+    while (cardContainer.firstChild) {
+        cardContainer.removeChild(cardContainer.firstChild);
+    }
+    if (activeUser.role === 'admin') {
+        all_cards.forEach(card => {
+            const cardElement = createdEditableCard(card)
+            cardContainer.appendChild(cardElement);
+        });
 
-    }else if(activeUser.role==='user'){
-        if(showUsersCards){
-
-        }else{
+    } else if (activeUser.role === 'user') {
+        if (showUsersCards) {
+            all_cards.forEach(card => {
+                if (card.used_id === activeUser.id) {
+                    const cardElement = createdEditableCard(card);
+                    cardContainer.appendChild(cardElement);
+                }
+            });
+            cardContainer.appendChild(addElement());
+        } else {
+            all_cards.forEach(card => {
+                if (card.used_id === activeUser.id) {
+                    const cardElement = createdEditableCard(card);
+                    cardContainer.appendChild(cardElement);
+                } else {
+                    const cardElement = createdCard(card);
+                    cardContainer.appendChild(cardElement);
+                }
+            });
 
         }
     }
+
+}
+
+function addElement() {
+    const cardElement = document.createElement('div');
+    cardElement.className = 'col-sm-6 col-lg-4 mb-4 rounded';
+    cardElement.innerHTML = `
+          <div class="card">
+            <div class="btn btn-sm btn-outline-secondary">
+              <a id="add" data-bs-toggle="modal" data-bs-target="#modalAddCard" href="#"
+                class="stretched-link card-text" aria-label="Add"
+                style="text-decoration: none; color: inherit; font-size: 2rem;">
+                +
+                <span class="visually-hidden">Add</span>
+              </a>
+            </div>
+          </div>
+                `;
+    return cardElement;
 }
 
 function createdCard(card) {
@@ -201,7 +256,7 @@ function createdEditableCard(card) {
                             <p class="card-text"><small>created by ${card.user_email}</small></p>
                             <!-- options for edit start -->
                             <div class="d-flex justify-content-between align-items-center">
-                                <button type="button" class="btn btn-sm btn-secondary" aria-label="Edit">
+                                <button id="Edit_${card.id}" type="button" class="btn btn-sm btn-secondary" aria-label="Edit">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                                     class="bi bi-pencil-fill" viewBox="0 0 16 16">
                                     <path
@@ -209,7 +264,7 @@ function createdEditableCard(card) {
                                 </svg>
                                 <span class="visually-hidden">Edit</span>
                                 </button>
-                                <button type="button" class="btn btn-sm btn-secondary" aria-label="Delete">
+                                <button id="Delete_${card.id}" type="button" class="btn btn-sm btn-secondary" aria-label="Delete">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash"
                                     viewBox="0 0 16 16">
                                     <path
@@ -240,11 +295,33 @@ async function paintCards() {
     });
 }
 
-async function allCards(){
+async function allCards(token) {
     try {
         const response = await fetch('/card/all_cards', {
             method: 'GET',
             headers: {
+                'Authorization': 'Bearer ' + token,
+                'Content-Type': 'application/json'
+            }
+        });
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        } else {
+            const cards = await response.json();
+            return cards
+        }
+    } catch (err) {
+        console.error(err);
+    }
+}
+
+async function clearCards() {
+    try {
+        const response = await fetch('/card/all_cards', {
+            method: 'GET',
+            headers: {
+                'Authorization': 'Bearer ' + token,
                 'Content-Type': 'application/json'
             }
         });
