@@ -184,7 +184,7 @@ async function updateContents(activeUser, display_cards,currentPage) {
                 cardContainer.removeChild(cardContainer.firstChild);
             }
             display_cards.forEach(card => {
-                if (card.used_id === activeUser.id) {
+                if (card.user_id == activeUser.id) {
                     const cardElement = createEditableCard(card);
                     cardContainer.appendChild(cardElement);
                 }
@@ -192,7 +192,7 @@ async function updateContents(activeUser, display_cards,currentPage) {
             cardContainer.appendChild(addElement());
         } else {
             display_cards.forEach(card => {
-                if (card.used_id === activeUser.id) {
+                if (card.user_id == activeUser.id) {
                     const cardElement = createEditableCard(card);
                     cardContainer.appendChild(cardElement);
                 } else {
@@ -233,7 +233,7 @@ function createCard(card) {
                             <img class="rounded-top" src=${card.url} alt="${card.name} - ${card.artist}" height="100%" width="100%" class="bd-placeholder-img">
                         </div>
                         <div class="card-body rounded-bottom">
-                            <h4 class="card-title">${card.name} - ${card.artist}</h4>
+                            <h4 class="card-title">${card.name} - ${card.artist} - ${card.user_id}</h4>
                             <h5 class="card-text">${card.category_name}</h5>
                             <h5 class="card-text">${new Date(card.date).toLocaleDateString()}</h5>
                             <p class="card-text">${card.description}</p>
