@@ -61,6 +61,7 @@ document.addEventListener('DOMContentLoaded', async (event) => {
                         <div class="card-body rounded-bottom">
                             <h4 class="card-title">${card.name} - ${card.artist}</h4>
                             <h5 class="card-text">${card.category_name}</h5>
+                            <h5 class="card-text">${new Date(card.date).toLocaleDateString()}</h5>
                             <p class="card-text">${card.description}</p>
                             <p class="card-text"><small>created by ${card.user_email}</small></p>
                         </div>

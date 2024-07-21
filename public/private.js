@@ -69,6 +69,10 @@ async function getActiveUser() {
 }
 
 async function loadContent(activeUser) {
+    document.getElementById("welcomeBar").innerHTML=`
+        <h1>Bonjour, ${activeUser.username}</h1>
+        <p class="lead">Bienvenue dans le monde des albums de musique !</p>
+    `;
     if (activeUser.role === "admin") {
         loadAdminContent(activeUser);
     } else if (activeUser.role === "user") {
@@ -78,25 +82,25 @@ async function loadContent(activeUser) {
 
 async function loadAdminContent(activeUser) {
     document.getElementById("top-navbar").innerHTML = `
-        
           <li class="nav-item">
-            <a class="nav-link disabled" aria-disabled="true">Vos tuiles</a>
+            <a class="nav-link disabled">Vos tuiles</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link active" aria-current="page" href="#">Toutes les tuiles</a>
+            <a class="nav-link active" href="#">Toutes les tuiles</a>
           </li>
     `;
 }
 
 async function loadUserContent(activeUser) {
     document.getElementById("top-navbar").innerHTML = `
-        
           <li class="nav-item">
-            <a class="nav-link active" aria-current="page" id="usersCards">Vos tuiles</a>
+            <a class="nav-link" id="usersCards">Vos tuiles</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" id="userPageAllCards">Toutes les tuiles</a>
+            <a class="nav-link active" id="userPageAllCards">Toutes les tuiles</a>
           </li>`;
+    const showUsersCards=false;
+
 }
 
 async function loadLogoutButton() {
@@ -124,6 +128,26 @@ async function loadLogoutButton() {
             alert('An error occurred while logging out. Please try again later.');
         }
     });
+}
+
+function createdCard(card) {
+    const cardElement = document.createElement('div');
+    cardElement.className = 'col-sm-6 col-lg-4 mb-4 rounded';
+    cardElement.innerHTML = `
+                    <div class="card rounded">
+                        <div class="bd-placeholder-img card-img-top">
+                            <img class="rounded-top" src=${card.url} alt="${card.name} - ${card.artist}" height="100%" width="100%" class="bd-placeholder-img">
+                        </div>
+                        <div class="card-body rounded-bottom">
+                            <h4 class="card-title">${card.name} - ${card.artist}</h4>
+                            <h5 class="card-text">${card.category_name}</h5>
+                            <h5 class="card-text">${new Date(card.date).toLocaleDateString()}</h5>
+                            <p class="card-text">${card.description}</p>
+                            <p class="card-text"><small>created by ${card.user_email}</small></p>
+                        </div>
+                    </div>
+                `;
+    return cardElement;
 }
 
 async function paintCards() {

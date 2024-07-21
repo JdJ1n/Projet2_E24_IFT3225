@@ -199,12 +199,8 @@
 
   <main class="container">
     <div id="welcomeBar" class="bg-body-tertiary p-5 rounded">
-      <h1>Bonjour</h1>
-      <p class="lead">This example is a quick exercise to illustrate how fixed to top navbar works. As you scroll, it
-        will remain fixed to the top of your browser's viewport.</p>
-      <a class="btn btn-lg btn-primary" href="#" role="button">View navbar docs &raquo;</a>
     </div>
-    
+
     <div class="modal fade p-5" tabindex="-1" role="dialog" id="modalAddCard">
       <div class="modal-dialog" role="document">
         <div class="modal-content rounded-4 shadow">
@@ -241,26 +237,31 @@
       </div>
     </div>
 
-    <div class="bg-body-secondary">
+    <div id="searchBar" class="bg-body-secondary">
       <form class="d-flex rounded-3" role="search">
-        <label for="exampleSelect" class="form-label visually-hidden">Select menu</label>
-        <select class="form-select m-2 p-2" id="exampleSelect">
-          <option selected="">Open this select menu</option>
-          <option value="1">One</option>
-          <option value="2">Two</option>
-          <option value="3">Three</option>
+
+        <label for="methodSelect" class="form-label visually-hidden">Mode de recherche</label>
+        <select class="form-select m-2 p-2" id="methodSelect">
+          <option selected="">Mode de recherche</option>
+          <option value="1">Correspondance exacte</option>
+          <option value="2">Recherche floue</option>
         </select>
-        <input class="form-control m-2 p-2" type="search" placeholder="Search" aria-label="Search">
-        <button class="btn btn-outline-success m-2 p-2" type="submit">Search</button>
+
+        <label for="attrSelect" class="form-label visually-hidden">Par</label>
+        <select class="form-select m-2 p-2" id="attrSelect">
+          <option selected="">Par différents critères</option>
+          <option value="1">Par tous</option>
+          <option value="2">Par utilisateur</option>
+          <option value="3">Par catégorie</option>
+          <option value="4">Par nom</option>
+          <option value="5">Par artiste</option>
+          <option value="6">Par description</option>
+        </select>
+
+        <input id="searchInput" class="form-control m-2 p-2" type="search" placeholder="Rechercher" aria-label="Rechercher">
+        <button id="searchButton" class="btn btn-outline-success m-2 p-2" type="submit">Rechercher</button>
       </form>
 
-      <label for="exampleSelect" class="form-label visually-hidden">Select menu</label>
-      <select class="form-select" id="exampleSelect">
-        <option selected="">Open this select menu</option>
-        <option value="1">One</option>
-        <option value="2">Two</option>
-        <option value="3">Three</option>
-      </select>
     </div>
 
     <div class="bg-body-tertiary p-5 rounded mb-5">
