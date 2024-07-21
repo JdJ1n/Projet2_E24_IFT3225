@@ -29,6 +29,7 @@ router.post('/register', asyncHandler(async (req, res) => {
     res.status(201).json({ message: 'User registered' });
 }));
 
+//login
 router.post("/login", asyncHandler(async (req, res) => {
     const { email, password } = req.body;
 
