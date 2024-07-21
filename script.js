@@ -225,7 +225,7 @@ app.post('/api/cardstest', (req, res) => {
         res.status(201).json({ message: 'Card added', cardId: results.insertId });
 
         // Broadcast card added event
-        io.emit('cardAdded', { id: results.insertId, name, artist, category_id, user_id, date, description, url });
+        // io.emit('cardAdded', { id: results.insertId, name, artist, category_id, user_id, date, description, url });
     });
 });
 
