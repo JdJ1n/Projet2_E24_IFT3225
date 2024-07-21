@@ -247,34 +247,36 @@
       <form class="d-flex rounded-3" role="search">
 
         <label for="methodSelect" class="form-label visually-hidden">Mode de recherche</label>
-        <select class="form-select m-2 p-2" id="methodSelect">
-          <option selected="">Mode de recherche</option>
+        <select class="form-select ms-2 my-2 p-2" id="methodSelect" placeholder="Mode de recherche">
+          <option selected="0">--</option>
           <option value="1">Correspondance exacte</option>
           <option value="2">Recherche floue</option>
         </select>
 
         <label for="attrSelect" class="form-label visually-hidden">Par</label>
-        <select class="form-select m-2 p-2" id="attrSelect">
-          <option selected="">Par différents critères</option>
-          <option value="1">Par tous</option>
-          <option value="2">Par utilisateur</option>
-          <option value="3">Par catégorie</option>
-          <option value="4">Par nom</option>
-          <option value="5">Par artiste</option>
-          <option value="6">Par description</option>
+        <select class="form-select ms-2 my-2 p-2" id="attrSelect" placeholder="Par différents critères">
+          <option selected="0">--</option>
+          <option value="1">par utilisateur</option>
+          <option value="2">par catégorie</option>
+          <option value="3">par nom</option>
+          <option value="4">par artiste</option>
+          <option value="5">par description</option>
         </select>
 
-        <input id="searchInput" class="form-control m-2 p-2" type="search" placeholder="Rechercher" aria-label="Rechercher">
-        <button id="searchButton" class="btn btn-outline-success m-2 p-2" type="submit">Rechercher</button>
+        <input id="searchInput" class="form-control ms-2 my-2 p-2" type="search" placeholder="Rechercher"
+          aria-label="Rechercher">
+        <button id="searchButton" class="btn btn-outline-success ms-2 my-2 p-2" type="submit">Rechercher</button>
+        <button id="resetButton" class="btn btn-outline-danger m-2 p-2" type="reset">Effacer</button>
       </form>
 
     </div>
+
 
     <div class="bg-body-tertiary p-5 rounded mb-5">
       <div id="card-contents" class="row" data-masonry="{&quot;percentPosition&quot;: true }">
 
 
-        <!-- card template start -->
+        <!-- card template start 
         <div class="col-sm-6 col-lg-4 mb-4 rounded">
           <div class="card rounded">
             <div class="bd-placeholder-img card-img-top">
@@ -288,7 +290,6 @@
                 card has supporting text below as a natural lead-in to additional content.This card has supporting text
                 below as a natural lead-in to additional content.</p>
               <p class="card-text"><small>created by jiadong.jin@umontreal.ca</small></p>
-              <!-- options for edit start -->
               <div class="d-flex justify-content-between align-items-center">
                 <button type="button" class="btn btn-sm btn-secondary" aria-label="Edit">
                   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
@@ -309,13 +310,9 @@
                   <span class="visually-hidden">Delete</span>
                 </button>
               </div>
-              <!-- options for edit end -->
             </div>
           </div>
         </div>
-        <!-- card template end -->
-
-        <!-- card template start -->
         <div class="col-sm-6 col-lg-4 mb-4 rounded">
           <div class="card rounded">
             <div class="bd-placeholder-img card-img-top">
@@ -327,7 +324,6 @@
               <h5 class="card-text">Other</h5>
               <p class="card-text">Unknown content.</p>
               <p class="card-text"><small>created by jiadong.jin@umontreal.ca</small></p>
-              <!-- options for edit start -->
               <div class="d-flex justify-content-between align-items-center">
                 <button type="button" class="btn btn-sm btn-secondary" aria-label="Edit">
                   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
@@ -348,14 +344,10 @@
                   <span class="visually-hidden">Delete</span>
                 </button>
               </div>
-              <!-- options for edit end -->
             </div>
           </div>
         </div>
-        <!-- card template end -->
-
-        <!-- addition card template start -->
-        <!-- addition card template end -->
+        -->
 
       </div>
 

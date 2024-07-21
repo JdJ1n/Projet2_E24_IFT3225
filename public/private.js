@@ -53,14 +53,15 @@ async function loadPage(token) {
 
     const active_user = await getActiveUser(token);
 
-    var perPage = 10;
+    var perPage = 15;
 
     await loadLogoutButton();
 
     await loadBar(active_user);
 
     await updatePage(token);
-    var addElement = document.getElementById("add");
+
+    //var addElement = document.getElementById("add");
 
     console.log("Page loaded!")
 }
@@ -166,33 +167,36 @@ async function loadLogoutButton() {
     });
 }
 
-async function updateContents(activeUser, all_cards) {
+async function updateContents(activeUser, display_cards,currentPage) {
     const cardContainer = document.getElementById('card-contents');
     while (cardContainer.firstChild) {
         cardContainer.removeChild(cardContainer.firstChild);
     }
     if (activeUser.role === 'admin') {
-        all_cards.forEach(card => {
-            const cardElement = createdEditableCard(card)
+        display_cards.forEach(card => {
+            const cardElement = createEditableCard(card)
             cardContainer.appendChild(cardElement);
         });
 
     } else if (activeUser.role === 'user') {
         if (showUsersCards) {
-            all_cards.forEach(card => {
+            while (cardContainer.firstChild) {
+                cardContainer.removeChild(cardContainer.firstChild);
+            }
+            display_cards.forEach(card => {
                 if (card.used_id === activeUser.id) {
-                    const cardElement = createdEditableCard(card);
+                    const cardElement = createEditableCard(card);
                     cardContainer.appendChild(cardElement);
                 }
             });
             cardContainer.appendChild(addElement());
         } else {
-            all_cards.forEach(card => {
+            display_cards.forEach(card => {
                 if (card.used_id === activeUser.id) {
-                    const cardElement = createdEditableCard(card);
+                    const cardElement = createEditableCard(card);
                     cardContainer.appendChild(cardElement);
                 } else {
-                    const cardElement = createdCard(card);
+                    const cardElement = createCard(card);
                     cardContainer.appendChild(cardElement);
                 }
             });
@@ -220,7 +224,7 @@ function addElement() {
     return cardElement;
 }
 
-function createdCard(card) {
+function createCard(card) {
     const cardElement = document.createElement('div');
     cardElement.className = 'col-sm-6 col-lg-4 mb-4 rounded';
     cardElement.innerHTML = `
@@ -240,7 +244,7 @@ function createdCard(card) {
     return cardElement;
 }
 
-function createdEditableCard(card) {
+function createEditableCard(card) {
     const cardElement = document.createElement('div');
     cardElement.className = 'col-sm-6 col-lg-4 mb-4 rounded';
     cardElement.innerHTML = `
@@ -316,26 +320,6 @@ async function allCards(token) {
     }
 }
 
-async function clearCards() {
-    try {
-        const response = await fetch('/card/all_cards', {
-            method: 'GET',
-            headers: {
-                'Authorization': 'Bearer ' + token,
-                'Content-Type': 'application/json'
-            }
-        });
-
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        } else {
-            const cards = await response.json();
-            return cards
-        }
-    } catch (err) {
-        console.error(err);
-    }
-}
 
 /*
 // 假设你已经从后端获取了所有的数据，并将其存储在了一个名为allData的数组中
