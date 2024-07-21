@@ -1,25 +1,6 @@
 document.addEventListener('DOMContentLoaded', async (event) => {
 
-    /*async function clearTokens() {
-        try {
-            // Send a request to the server to clear all authTokens in the database
-            await fetch('/user/clear-tokens', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            });
-
-            // Clear the token in the localStorage
-            localStorage.removeItem('token');
-        } catch (err) {
-            console.error(err);
-        }
-    }
-    // Call the function to clear tokens
-    clearTokens();*/
-
-    async function login(email,password) {
+    async function login(email, password) {
         try {
             const response = await fetch('/user/login', {
                 method: 'POST',
@@ -29,12 +10,12 @@ document.addEventListener('DOMContentLoaded', async (event) => {
                 body: JSON.stringify({ email, password })
             });
             const data = await response.json();
-    
+
             if (data.token) {
                 localStorage.setItem('token', data.token);
                 const storedToken = localStorage.getItem('token');
                 console.log('Stored token:', storedToken);
-    
+
                 alert('Login successful');
                 window.location.href = "/private.html";
             } else {
@@ -44,44 +25,43 @@ document.addEventListener('DOMContentLoaded', async (event) => {
             console.error(err);
         }
     }
-    
+
     function addLoginEventListener(buttonId, getEmail, getPassword) {
         const button = document.getElementById(buttonId);
         button.addEventListener('click', async function () {
             const email = getEmail();
             const password = getPassword();
-    
+
             if (!email || !password) {
                 alert("All fields are required");
                 return;
             }
-    
+
             await login(email, password);
         });
     }
-    
+
     addLoginEventListener("userlogin", () => document.getElementById('floatingInput').value, () => document.getElementById('floatingPassword').value);
     addLoginEventListener("adminlogin", () => 'admin@admin.com', () => document.getElementById('adminPassword').value);
-    
 
     document.getElementById("userSignup").addEventListener('click', async (e) => {
         e.preventDefault();
         try {
             const email = document.getElementById('floatingInput').value;
             const password = document.getElementById('floatingPassword').value;
-    
+
             if (!email || !password) {
                 alert("All fields are required");
                 return;
             }
-    
+
             // Email format check
             const emailRegex = /^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$/;
             if (!emailRegex.test(email)) {
                 alert("Invalid email format");
                 return;
             }
-    
+
             const response = await fetch('/user/register', {
                 method: 'POST',
                 headers: {
@@ -95,7 +75,7 @@ document.addEventListener('DOMContentLoaded', async (event) => {
             console.error(err);
         }
     });
-    
+
 
     try {
         const response = await fetch('/card/random-cards', {
@@ -104,13 +84,13 @@ document.addEventListener('DOMContentLoaded', async (event) => {
                 'Content-Type': 'application/json'
             }
         });
-    
+
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
         } else {
             const cards = await response.json();
             const cardContainer = document.getElementById('card-contents');
-    
+
             cards.forEach(card => {
                 const cardElement = document.createElement('div');
                 cardElement.className = 'col-sm-6 col-lg-4 mb-4 rounded';
@@ -133,11 +113,11 @@ document.addEventListener('DOMContentLoaded', async (event) => {
             var colors = ['bg-primary text-white', 'bg-secondary text-white', 'bg-success text-white', 'bg-danger text-white', 'bg-warning text-dark', 'bg-info text-dark', 'bg-light text-dark', 'bg-dark text-white'];
             var cardbgs = document.querySelectorAll('.card-body');
 
-            cardbgs.forEach(function(card) {
-            var color = colors[Math.floor(Math.random() * colors.length)];
-            var classes = color.split(' ');
+            cardbgs.forEach(function (card) {
+                var color = colors[Math.floor(Math.random() * colors.length)];
+                var classes = color.split(' ');
 
-            card.classList.add(...classes);
+                card.classList.add(...classes);
             });
 
         }

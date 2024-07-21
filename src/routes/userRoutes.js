@@ -6,7 +6,7 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const authentification = require('../middlewares/auth');
 const asyncHandler = require('../middlewares/asyncHandler');
-const secretKey=process.env.SECRET_KEY;
+const secretKey = process.env.SECRET_KEY;
 
 // register
 router.post('/register', asyncHandler(async (req, res) => {
@@ -23,9 +23,9 @@ router.post('/register', asyncHandler(async (req, res) => {
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
-    
-    await db.query('INSERT INTO users (username, email, password, role) VALUES (?, ?, ?, ?)', 
-    [username, email, hashedPassword, role || 'user']);
+
+    await db.query('INSERT INTO users (username, email, password, role) VALUES (?, ?, ?, ?)',
+        [username, email, hashedPassword, role || 'user']);
     res.status(201).json({ message: 'User registered' });
 }));
 
@@ -36,7 +36,7 @@ router.post("/login", asyncHandler(async (req, res) => {
         console.log('Login failed: All fields are required');
         return res.status(400).json({ message: 'All fields are required' });
     }
-    
+
     const [users] = await db.query('SELECT * FROM users WHERE email = ?', [email]);
     if (users.length === 0) {
         console.log('Login failed: User not found');
@@ -51,7 +51,7 @@ router.post("/login", asyncHandler(async (req, res) => {
         return res.status(400).json({ message: 'Invalid password' });
     }
 
-    const token = jwt.sign({ id: user.id, name:user.username, role: user.role }, secretKey, { expiresIn: '24h' });
+    const token = jwt.sign({ id: user.id, name: user.username, role: user.role }, secretKey, { expiresIn: '24h' });
     await db.query('UPDATE users SET authToken = ? WHERE id = ?', [token, user.id]);
 
     const [updatedUsers] = await db.query('SELECT * FROM users WHERE id = ?', [user.id]);
@@ -63,27 +63,27 @@ router.post("/login", asyncHandler(async (req, res) => {
 
 // logout
 router.post('/logout', authentification, asyncHandler(async (req, res) => {
-        // Remove the token from the database
-        await db.query('UPDATE users SET authToken = NULL WHERE id = ?', [req.user.id]);
-        console.log('Logout successful:', req.user);
-        res.json({ message: 'User logged out' });
+    // Remove the token from the database
+    await db.query('UPDATE users SET authToken = NULL WHERE id = ?', [req.user.id]);
+    console.log('Logout successful:', req.user);
+    res.json({ message: 'User logged out' });
 }));
 
 // clear tokens
 router.post('/clearAllTokens', asyncHandler(async (req, res) => {
-        // Clear all authTokens in the database
-        await db.query('UPDATE users SET authToken = NULL');
-        console.log('All authTokens cleared');
-        res.json({ message: 'All authTokens cleared' });
+    // Clear all authTokens in the database
+    await db.query('UPDATE users SET authToken = NULL');
+    console.log('All authTokens cleared');
+    res.json({ message: 'All authTokens cleared' });
 }));
 
 router.get('/user_page', authentification, asyncHandler(async (req, res) => {
-        // Check if the user is authenticated and their role is 'user'
-        if (req.user.role === 'user' || req.user.role === 'admin') {
-            res.status(200).json({ message: 'OK' });
-        } else {
-            res.status(403).json({ message: 'Forbidden' });
-        }
+    // Check if the user is authenticated and their role is 'user'
+    if (req.user.role === 'user' || req.user.role === 'admin') {
+        res.status(200).json({ message: 'OK' });
+    } else {
+        res.status(403).json({ message: 'Forbidden' });
+    }
 }));
 
 module.exports = router;
