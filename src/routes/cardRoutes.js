@@ -11,11 +11,20 @@ router.get('/card', authenticateToken, async (req, res) => {
     res.json(tasks);
 });*/
 
-// get random cards
-router.get('/cards', asyncHandler(async (req, res) => {
-    const [cards] = await db.query('SELECT * FROM card ORDER BY RAND() LIMIT 15');
+
+// get one's cards
+router.get('/user_cards',authentification, asyncHandler(async (req, res) => {
+    const query = `
+        SELECT card.*, category.name AS category_name, users.email AS user_email
+        FROM card 
+        JOIN category ON card.category_id = category.id
+        JOIN users ON card.user_id = users.id
+        WHERE card.user_id = ?
+    `;
+    const [cards] = await db.query(query,[req.user.id]);
     res.json(cards);
 }));
+
 
 // random 15 cards for index.html
 router.get('/random_cards', asyncHandler(async (req, res) => {
@@ -27,12 +36,12 @@ router.get('/random_cards', asyncHandler(async (req, res) => {
         ORDER BY RAND() 
         LIMIT 15
     `;
-
     const [cards] = await db.query(query);
     res.json(cards);
 }));
 
-router.get('/all_cards', asyncHandler(async (req, res) => {
+//get all cards
+router.get('/all_cards',authentification, asyncHandler(async (req, res) => {
     const query = `
         SELECT card.*, category.name AS category_name, users.email AS user_email
         FROM card

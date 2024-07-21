@@ -162,3 +162,69 @@ async function paintCards() {
         card.classList.add(...classes);
     });
 }
+
+/*
+// 假设你已经从后端获取了所有的数据，并将其存储在了一个名为allData的数组中
+var allData = [...]; // 从后端获取的所有数据
+var perPage = 10; // 每页显示的数据数量
+
+// 计算总页数
+var totalPages = Math.ceil(allData.length / perPage);
+
+// 生成分页按钮
+var pagination = document.querySelector('.pagination');
+for (var i = 1; i <= totalPages; i++) {
+    var li = document.createElement('li');
+    li.className = 'page-item';
+    var a = document.createElement('a');
+    a.className = 'page-link';
+    a.textContent = i;
+    a.href = '#';
+    li.appendChild(a);
+    pagination.appendChild(li);
+}
+
+// 显示第一页的数据
+showPage(1);
+
+// 为每个分页按钮添加点击事件
+var pageLinks = document.querySelectorAll('.page-link');
+pageLinks.forEach(function(link) {
+    link.addEventListener('click', function(e) {
+        e.preventDefault();
+
+        // 获取被点击的页码
+        var pageNum = parseInt(this.textContent);
+
+        // 移除所有分页按钮的active类
+        var pageItems = document.querySelectorAll('.page-item');
+        pageItems.forEach(function(item) {
+            item.classList.remove('active');
+        });
+
+        // 给被点击的分页按钮添加active类
+        this.parentNode.classList.add('active');
+
+        // 显示对应页码的数据
+        showPage(pageNum);
+    });
+});
+
+// 显示指定页码的数据
+function showPage(pageNum) {
+    var start = (pageNum - 1) * perPage;
+    var end = start + perPage;
+    var pageData = allData.slice(start, end);
+
+    // 这里添加显示数据的代码
+    // 例如，你可以将数据添加到一个表格或列表中
+    // var table = document.querySelector('#data-table');
+    // table.innerHTML = '';
+    // pageData.forEach(function(item) {
+    //     var row = document.createElement('tr');
+    //     // 这里添加创建表格行的代码
+    //     table.appendChild(row);
+    // });
+}
+
+*/

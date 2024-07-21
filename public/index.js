@@ -35,7 +35,6 @@ document.addEventListener('DOMContentLoaded', async (event) => {
         }
     });
 
-
     try {
         const response = await fetch('/card/random_cards', {
             method: 'GET',
