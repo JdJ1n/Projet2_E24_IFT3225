@@ -4,6 +4,7 @@ const bodyParser = require('body-parser');
 const path = require('path');
 const userRoutes = require('./src/routes/userRoutes');
 const cardRoutes = require('./src/routes/cardRoutes');
+const categoryRoutes = require('./src/routes/categoryRoutes');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -13,6 +14,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/user', userRoutes);
 app.use('/card', cardRoutes);
+app.use('/cate', categoryRoutes);
 
 // Error handling middleware
 app.use((err, req, res, next) => {

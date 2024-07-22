@@ -208,44 +208,56 @@
     </div>
 
     <div id="secondaryForm">
+      <!--
       <div class="modal fade p-5" tabindex="-1" role="dialog" id="modalAddCard">
         <div class="modal-dialog" role="document">
           <div class="modal-content rounded-4 shadow">
             <div class="modal-header p-5 pb-4 border-bottom-0">
-              <h1 class="fw-bold mb-0 fs-2">Inscription/Connexion</h1>
+              <h1 class="fw-bold mb-0 fs-2">Ajout d'une tuile</h1>
               <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-  
             <div class="modal-body p-5 pt-0">
-              <form class="">
+              <form class="add_card_form">
                 <div class="form-floating mb-3">
-                  <input type="email" class="form-control rounded-3" id="floatingInput" placeholder="name@example.com">
-                  <label for="floatingInput">Adresse e-mail</label>
+                  <input id="add_card_name" type="name" class="form-control rounded-3" placeholder="Nom d'album">
+                  <label for="add_card_name">Nom d'album</label>
                 </div>
                 <div class="form-floating mb-3">
-                  <input type="password" class="form-control rounded-3" id="floatingPassword" placeholder="Password">
-                  <label for="floatingPassword">Mot de passe</label>
+                  <input id="add_card_artist" type="artist" class="form-control rounded-3" placeholder="Artiste">
+                  <label for="add_card_artist">Artiste</label>
                 </div>
-                <button class="w-100 mb-2 btn btn-lg rounded-3 btn-primary" type="submit">Inscription</button>
-                <button id="userlogin" class="w-100 mb-2 btn btn-lg rounded-3 btn-primary"
-                  type="button">Connexion</button>
-                <small>En cliquant sur Inscription, vous acceptez les conditions d'utilisation.</small>
-                <hr class="my-4">
-                <h2 class="fs-5 fw-bold mb-3">Si vous êtes un administrateur ...</h2>
                 <div class="form-floating mb-3">
-                  <input type="password" class="form-control rounded-3" id="floatingPassword2" placeholder="Password">
-                  <label for="floatingPassword">Mot de passe administrateur</label>
+                  <select class="form-select" id="add_card_category" >
+                    <option selected disabled value="">Choisir...</option>
+                    <option>...</option>
+                  </select>
+                  <label for="add_card_category">Genre musical</label>
                 </div>
-                <button id="adminlogin" class="w-100 mb-2 btn btn-lg rounded-3 btn-primary"
-                  type="button">Connexion</button>
+                <div class="form-floating mb-3">
+                  <input id="add_card_date" type="date" class="form-control rounded-3" placeholder="Date de sortie">
+                  <label for="add_card_date">Date de sortie</label>
+                </div>
+                <div class="form-floating mb-3">
+                  <input id="add_card_url" type="url" class="form-control rounded-3" placeholder="Lien vers la couverture d'album">
+                  <label for="add_card_url">Lien vers la couverture d'album</label>
+                </div>
+                <div class="form-floating mb-3">
+                  <input id="add_card_des" type="description" class="form-control rounded-3" placeholder="Description">
+                  <label for="add_card_des">Description</label>
+                </div>
+                <button id="add_card_clear" class="w-100 mb-2 btn btn-lg rounded-3 btn-outline-danger"
+                  type="reset">Effacer</button>
+                <button id="add_card_btn" class="w-100 mb-2 btn btn-lg rounded-3 btn-primary"
+                  type="button">Ajouter</button>
               </form>
             </div>
           </div>
         </div>
       </div>
+      -->
 
     </div>
-    <div id="searchBar" class="bg-body-secondary">
+    <div id="searchBar" class="bg-body-tertiary rounded-3 my-2">
       <form id="searchForm" class="d-flex rounded-3" role="search">
 
         <label for="methodSelect" class="form-label visually-hidden">Mode de recherche</label>
@@ -361,7 +373,7 @@
 
 
     </div>
-    
+
   </main>
   <script src="assets/dist/js/bootstrap.bundle.min.js"></script>
   <script src="masonry.pkgd.min.js"></script>

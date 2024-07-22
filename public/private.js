@@ -58,26 +58,24 @@ document.addEventListener('DOMContentLoaded', async (event) => {
 
 
     //main function for update page
-    await showCards(token);
-
-    //var addElement = document.getElementById("add");
+    await showCards();
 
     document.getElementById("searchButton").addEventListener('click', async (e) => {
         //Apply current attrs for search
-        await showCards(token);
+        await showCards();
     })
 
     document.getElementById("resetButton").addEventListener('click', async (e) => {
         //reset here
-        await showCards(token);
+        await showCards();
     })
 
     console.log("Page loaded!")
 
-
 });
 
-async function showCards(token) {
+async function showCards() {
+    const token = localStorage.getItem('token');
     await clearPagis();
     const active_user = await getActiveUser(token);
     const all_cards = await allCards(token);
@@ -135,24 +133,21 @@ async function showCards(token) {
         var end = start + 15;
         var page_cards = display_cards.slice(start, end);
 
-        const cardContainer = document.getElementById('card-contents');
-
         if (active_user.role === 'user' && showUsersCards) {
-            cardContainer.appendChild(addElement());
+            await addElement();
         }
-        page_cards.forEach(card => {
+        page_cards.forEach(async card => {
 
             if (active_user.role === 'user' && card.user_id != active_user.id) {
-                const cardElement = createCard(card);
-                cardContainer.appendChild(cardElement);
+                await createCard(card);
             } else {
-                const cardElement = createEditableCard(card);
-                cardContainer.appendChild(cardElement);
+                await createEditableCard(card);
             }
         });
-
         await paintCards();
-        await useMasonry();
+        setTimeout(async function () {
+            await useMasonry();
+        }, 50);
     }
 
 }
@@ -167,54 +162,7 @@ async function cardFilter(active_user, cards) {
     return cards;
 }
 
-
-
-async function updateContents(activeUser, display_cards, currentPage) {
-    const cardContainer = document.getElementById('card-contents');
-    if (activeUser.role === 'admin') {
-        display_cards.forEach(card => {
-            const cardElement = createEditableCard(card)
-            cardContainer.appendChild(cardElement);
-        });
-    } else if (activeUser.role === 'user') {
-        display_cards.forEach(card => {
-            if (card.user_id == activeUser.id) {
-                const cardElement = createEditableCard(card);
-                cardContainer.appendChild(cardElement);
-            } else {
-                const cardElement = createCard(card);
-                cardContainer.appendChild(cardElement);
-            }
-        });
-
-    }
-}
-
-
-
-
-
-function createCard(card) {
-    const cardElement = document.createElement('div');
-    cardElement.className = 'col-sm-6 col-lg-4 mb-4 rounded';
-    cardElement.innerHTML = `
-                    <div class="card rounded">
-                        <div class="bd-placeholder-img card-img-top">
-                            <img class="rounded-top" src=${card.url} alt="${card.name} - ${card.artist}" height="100%" width="100%" class="bd-placeholder-img">
-                        </div>
-                        <div class="card-body rounded-bottom">
-                            <h4 class="card-title">${card.name} - ${card.artist} - ${card.user_id}</h4>
-                            <h5 class="card-text">${card.category_name}</h5>
-                            <h5 class="card-text">${new Date(card.date).toLocaleDateString()}</h5>
-                            <p class="card-text">${card.description}</p>
-                            <p class="card-text"><small>created by ${card.user_email}</small></p>
-                        </div>
-                    </div>
-                `;
-    return cardElement;
-}
-
-function createEditableCard(card) {
+async function createCard(card) {
     const cardElement = document.createElement('div');
     cardElement.className = 'col-sm-6 col-lg-4 mb-4 rounded';
     cardElement.innerHTML = `
@@ -228,32 +176,43 @@ function createEditableCard(card) {
                             <h5 class="card-text">${new Date(card.date).toLocaleDateString()}</h5>
                             <p class="card-text">${card.description}</p>
                             <p class="card-text"><small>created by ${card.user_email}</small></p>
-                            <!-- options for edit start -->
-                            <div class="d-flex justify-content-between align-items-center">
-                                <button id="Edit_${card.id}" type="button" class="btn btn-sm btn-secondary" aria-label="Edit">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                                    class="bi bi-pencil-fill" viewBox="0 0 16 16">
-                                    <path
-                                    d="M12.854.146a.5.5 0 0 0-.707 0L10.5 1.793 14.207 5.5l1.647-1.646a.5.5 0 0 0 0-.708zm.646 6.061L9.793 2.5 3.293 9H3.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.207zm-7.468 7.468A.5.5 0 0 1 6 13.5V13h-.5a.5.5 0 0 1-.5-.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.5-.5V10h-.5a.5.5 0 0 1-.175-.032l-.179.178a.5.5 0 0 0-.11.168l-2 5a.5.5 0 0 0 .65.65l5-2a.5.5 0 0 0 .168-.11z" />
-                                </svg>
-                                <span class="visually-hidden">Edit</span>
-                                </button>
-                                <button id="Delete_${card.id}" type="button" class="btn btn-sm btn-secondary" aria-label="Delete">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash"
-                                    viewBox="0 0 16 16">
-                                    <path
-                                    d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0z" />
-                                    <path
-                                    d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4zM2.5 3h11V2h-11z" />
-                                </svg>
-                                <span class="visually-hidden">Delete</span>
-                                </button>
-                            </div>
-                            <!-- options for edit end -->
                         </div>
                     </div>
                 `;
-    return cardElement;
+
+    document.getElementById('card-contents').appendChild(cardElement);
+}
+
+async function createEditableCard(card) {
+    const cardElement = document.createElement('div');
+    cardElement.className = 'col-sm-6 col-lg-4 mb-4 rounded';
+    cardElement.innerHTML = `
+        <div class="card rounded">
+        <div class="bd-placeholder-img card-img-top">
+            <img class="rounded-top" src=${card.url} alt="${card.name} - ${card.artist}" height="100%" width="100%" class="bd-placeholder-img"></div>
+        <div class="card-body rounded-bottom">
+            <h4 class="card-title">${card.name} - ${card.artist}</h4>
+            <h5 class="card-text">${card.category_name}</h5>
+            <h5 class="card-text">${new Date(card.date).toLocaleDateString()}</h5>
+            <p class="card-text">${card.description}</p>
+            <p class="card-text">
+            <small>created by ${card.user_email}</small></p>
+            <!-- options for edit start -->
+            <div class="d-flex justify-content-between align-items-center">
+            <button id="Edit_${card.id}" type="button" class="btn btn-sm btn-secondary" aria-label="Edit">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-fill" viewBox="0 0 16 16">
+                <path d="M12.854.146a.5.5 0 0 0-.707 0L10.5 1.793 14.207 5.5l1.647-1.646a.5.5 0 0 0 0-.708zm.646 6.061L9.793 2.5 3.293 9H3.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.207zm-7.468 7.468A.5.5 0 0 1 6 13.5V13h-.5a.5.5 0 0 1-.5-.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.5-.5V10h-.5a.5.5 0 0 1-.175-.032l-.179.178a.5.5 0 0 0-.11.168l-2 5a.5.5 0 0 0 .65.65l5-2a.5.5 0 0 0 .168-.11z" /></svg>
+                <span class="visually-hidden">Edit</span></button>
+            <button id="Delete_${card.id}" type="button" class="btn btn-sm btn-secondary" aria-label="Delete">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
+                <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0z" />
+                <path d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4zM2.5 3h11V2h-11z" /></svg>
+                <span class="visually-hidden">Delete</span></button>
+            </div>
+            <!-- options for edit end --></div>
+        </div>
+        `;
+    document.getElementById('card-contents').appendChild(cardElement);
 }
 
 async function allCards(token) {
@@ -277,6 +236,26 @@ async function allCards(token) {
     }
 }
 
+async function allCategories() {
+    try {
+        const response = await fetch('/cate/all_categories', {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        } else {
+            const categories = await response.json();
+            return categories
+        }
+    } catch (err) {
+        console.error(err);
+    }
+}
+
 async function paintCards() {
     var colors = ['bg-primary text-white', 'bg-success text-white', 'bg-danger text-white', 'bg-warning text-dark', 'bg-info text-dark', 'bg-light text-dark', 'bg-dark text-white'];
 
@@ -292,7 +271,7 @@ async function paintCards() {
 
 
 
-function addElement() {
+async function addElement() {
     const cardElement = document.createElement('div');
     cardElement.className = 'col-sm-6 col-lg-4 mb-4 rounded';
     cardElement.innerHTML = `
@@ -307,7 +286,64 @@ function addElement() {
             </div>
           </div>
                 `;
-    return cardElement;
+
+    const all_categories = await allCategories();
+    const addCardForm = document.createElement('div');
+    addCardForm.className = 'modal fade p-5';
+    addCardForm.id = 'modalAddCard';
+    addCardForm.role = 'dialog';
+    addCardForm.tabindex = '-1';
+    addCardForm.innerHTML = `
+                    <div class="modal-dialog" role="document">
+                      <div class="modal-content rounded-4 shadow">
+                        <div class="modal-header p-5 pb-4 border-bottom-0">
+                          <h1 class="fw-bold mb-0 fs-2">Ajout d'une tuile</h1>
+                          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body p-5 pt-0">
+                          <form id="add_card_form">
+                            <div class="form-floating mb-3">
+                              <input id="add_card_name" name="name" type="name" class="form-control rounded-3" placeholder="Nom d'album" required>
+                              <label for="add_card_name">Nom d'album</label>
+                            </div>
+                            <div class="form-floating mb-3">
+                              <input id="add_card_artist" name="artist" type="artist" class="form-control rounded-3" placeholder="Artiste" required>
+                              <label for="add_card_artist">Artiste</label>
+                            </div>
+                            <div class="form-floating mb-3">
+                              <select class="form-select" id="add_card_category" >
+                                <option selected disabled value="">Choisir...</option>
+                              </select>
+                              <label for="add_card_category">Genre musical</label>
+                            </div>
+                            <div class="form-floating mb-3">
+                            <input id="add_card_date" name="date" type="date" class="form-control rounded-3" placeholder="Date de sortie" required>
+                            <label for="add_card_date">Date de sortie</label>
+                            </div>
+                            <div class="form-floating mb-3">
+                            <input id="add_card_url" name="url" type="url" class="form-control rounded-3" placeholder="Lien vers la couverture d'album" required>
+                            <label for="add_card_url">Lien vers la couverture d'album</label>
+                            </div>
+                            <div class="form-floating mb-3">
+                            <input id="add_card_des" type="description" class="form-control rounded-3" placeholder="Description">
+                            <label for="add_card_des">Description</label>
+                            </div>
+                            <button id="add_card_clear" class="w-100 mb-2 btn btn-lg rounded-3 btn-outline-danger"
+                            type="reset">Effacer</button>
+                            <button id="add_card_btn" class="w-100 mb-2 btn btn-lg rounded-3 btn-primary"
+                            type="button">Ajouter</button>
+                          </form>
+                        </div>
+                      </div>
+                    </div>
+                `;
+
+    let options = all_categories.map(category => `<option value="${category.id}">${category.name}</option>`).join('\n');
+    let selectElement = addCardForm.querySelector('#add_card_category');
+    selectElement.innerHTML += options;
+
+    document.getElementById('secondaryForm').appendChild(addCardForm);
+    document.getElementById('card-contents').appendChild(cardElement);
 }
 
 async function useMasonry() {
