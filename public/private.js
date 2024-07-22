@@ -307,8 +307,8 @@ async function createEditableCard(card) {
     const editForm = document.getElementById(`edit_card_form_${card.id}`);
 
     editForm.addEventListener('submit', async function (event) {
-        //event.preventDefault();
-        alert("edit btn work");
+        event.preventDefault();
+        
 
         const formData = new FormData(editForm);
         const tileData = {
@@ -324,6 +324,8 @@ async function createEditableCard(card) {
         console.log("----------------------------------------------------------------------------------");
         console.log(tileData);
         console.log("----------------------------------------------------------------------------------");
+
+        alert("edit btn work");
         /*
         const response = await fetch('/api/cardstest', {
             method: 'POST',
