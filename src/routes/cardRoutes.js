@@ -13,7 +13,7 @@ router.get('/card', authenticateToken, async (req, res) => {
 
 
 // get one's cards
-router.get('/user_cards',authentification, asyncHandler(async (req, res) => {
+router.get('/user_cards', authentification, asyncHandler(async (req, res) => {
     const query = `
         SELECT card.*, category.name AS category_name, users.email AS user_email
         FROM card 
@@ -21,7 +21,7 @@ router.get('/user_cards',authentification, asyncHandler(async (req, res) => {
         JOIN users ON card.user_id = users.id
         WHERE card.user_id = ?
     `;
-    const [cards] = await db.query(query,[req.user.id]);
+    const [cards] = await db.query(query, [req.user.id]);
     res.json(cards);
 }));
 
@@ -41,7 +41,7 @@ router.get('/random_cards', asyncHandler(async (req, res) => {
 }));
 
 //get all cards
-router.get('/all_cards',authentification, asyncHandler(async (req, res) => {
+router.get('/all_cards', authentification, asyncHandler(async (req, res) => {
     const query = `
         SELECT card.*, category.name AS category_name, users.email AS user_email
         FROM card
