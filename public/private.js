@@ -1,5 +1,6 @@
 document.addEventListener('DOMContentLoaded', async (event) => {
 
+    //Auth before load page
     try {
         console.log("Token check start.")
         const token = localStorage.getItem('token');
@@ -43,9 +44,20 @@ document.addEventListener('DOMContentLoaded', async (event) => {
         },
         set: async function (value) {
             _showUsersCards = value;
-            await updatePage(token);
+            var resetButton = document.getElementById("resetButton");
+            resetButton.click();
         }
     });
+
+    document.getElementById("searchButton").addEventListener('click', async (e) => {
+        //search here
+        await showCards(token);
+    })
+
+    document.getElementById("resetButton").addEventListener('click', async (e) => {
+        //reset here
+        await showCards(token);
+    })
 });
 
 async function loadPage(token) {
@@ -53,22 +65,78 @@ async function loadPage(token) {
 
     const active_user = await getActiveUser(token);
 
-    var perPage = 15;
-
     await loadLogoutButton();
 
     await loadBar(active_user);
 
-    await updatePage(token);
+    await showCards(token);
 
     //var addElement = document.getElementById("add");
 
     console.log("Page loaded!")
 }
 
-async function updatePage(token) {
+async function showCards(token) {
     const active_user = await getActiveUser(token);
     const all_cards = await allCards(token);
+    const perPage = 15;
+    if (all_cards.length > perPage) {
+        var totalPages = Math.ceil(all_cards.length / 15);
+        var pagination = document.querySelector('.pagination');
+
+        while (pagination.firstChild) {
+            pagination.removeChild(pagination.firstChild);
+        }
+
+        for (var i = 1; i <= totalPages; i++) {
+            var li = document.createElement('li');
+            li.className = 'page-item';
+            if (i === 1) {
+                li.classList.add('active');
+            }
+            var a = document.createElement('a');
+            a.className = 'page-link';
+            a.textContent = i;
+            a.href = '#';
+            li.appendChild(a);
+            pagination.appendChild(li);
+        }
+
+        // 显示第一页的数据
+        showPage(1);
+
+        // 为每个分页按钮添加点击事件
+        var pageLinks = document.querySelectorAll('.page-link');
+        pageLinks.forEach(function (link) {
+            link.addEventListener('click', function (e) {
+                e.preventDefault();
+
+                // 获取被点击的页码
+                var pageNum = parseInt(this.textContent);
+
+                // 移除所有分页按钮的active类和tabindex属性
+                var pageItems = document.querySelectorAll('.page-item');
+                pageItems.forEach(function (item) {
+                    item.classList.remove('active');
+                    item.removeAttribute('tabindex');
+                });
+
+                // 给被点击的分页按钮添加active类和tabindex属性
+                this.parentNode.classList.add('active');
+                this.parentNode.setAttribute('tabindex', '-1');
+
+                showPage(pageNum);
+            });
+        });
+
+        // 显示指定页码的数据
+        function showPage(pageNum) {
+            var start = (pageNum - 1) * 15;
+            var end = start + 15;
+            // 这里添加显示数据的代码
+        }
+
+    }
     await updateContents(active_user, all_cards);
     await paintCards();
 }
@@ -111,6 +179,9 @@ async function loadBar(activeUser) {
     document.getElementById("welcomeBar").innerHTML = `
         <h1>Bonjour, ${activeUser.username}</h1>
         <p class="lead">Bienvenue dans le monde des albums de musique !</p>
+        <p class="lead">Utilisez la barre de recherche pour trouver plus rapidement la tuile que vous recherchez ! </p>
+        <p class="lead">Veuillez sélectionner une option valide dans les deux premières cases, puis entrez votre recherche dans la barre de recherche et cliquez sur Recherche.</p>
+        <p class="lead">En cliquant sur Effacer, vous videriez la barre de recherche et toutes les tuiles seront affichées.</p>
     `;
     if (activeUser.role === "admin") {
         loadAdminBar();
@@ -167,7 +238,7 @@ async function loadLogoutButton() {
     });
 }
 
-async function updateContents(activeUser, display_cards,currentPage) {
+async function updateContents(activeUser, display_cards, currentPage) {
     const cardContainer = document.getElementById('card-contents');
     while (cardContainer.firstChild) {
         cardContainer.removeChild(cardContainer.firstChild);
@@ -319,70 +390,3 @@ async function allCards(token) {
         console.error(err);
     }
 }
-
-
-/*
-// 假设你已经从后端获取了所有的数据，并将其存储在了一个名为allData的数组中
-var allData = [...]; // 从后端获取的所有数据
-var perPage = 10; // 每页显示的数据数量
-
-// 计算总页数
-var totalPages = Math.ceil(allData.length / perPage);
-
-// 生成分页按钮
-var pagination = document.querySelector('.pagination');
-for (var i = 1; i <= totalPages; i++) {
-    var li = document.createElement('li');
-    li.className = 'page-item';
-    var a = document.createElement('a');
-    a.className = 'page-link';
-    a.textContent = i;
-    a.href = '#';
-    li.appendChild(a);
-    pagination.appendChild(li);
-}
-
-// 显示第一页的数据
-showPage(1);
-
-// 为每个分页按钮添加点击事件
-var pageLinks = document.querySelectorAll('.page-link');
-pageLinks.forEach(function(link) {
-    link.addEventListener('click', function(e) {
-        e.preventDefault();
-
-        // 获取被点击的页码
-        var pageNum = parseInt(this.textContent);
-
-        // 移除所有分页按钮的active类
-        var pageItems = document.querySelectorAll('.page-item');
-        pageItems.forEach(function(item) {
-            item.classList.remove('active');
-        });
-
-        // 给被点击的分页按钮添加active类
-        this.parentNode.classList.add('active');
-
-        // 显示对应页码的数据
-        showPage(pageNum);
-    });
-});
-
-// 显示指定页码的数据
-function showPage(pageNum) {
-    var start = (pageNum - 1) * perPage;
-    var end = start + perPage;
-    var pageData = allData.slice(start, end);
-
-    // 这里添加显示数据的代码
-    // 例如，你可以将数据添加到一个表格或列表中
-    // var table = document.querySelector('#data-table');
-    // table.innerHTML = '';
-    // pageData.forEach(function(item) {
-    //     var row = document.createElement('tr');
-    //     // 这里添加创建表格行的代码
-    //     table.appendChild(row);
-    // });
-}
-
-*/

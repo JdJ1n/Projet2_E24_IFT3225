@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- 主机： localhost:3306
--- 生成日期： 2024-07-19 06:28:20
+-- 生成日期： 2024-07-21 23:48:51
 -- 服务器版本： 5.7.24
 -- PHP 版本： 8.3.1
 
@@ -57,7 +57,9 @@ INSERT INTO `card` (`id`, `name`, `artist`, `category_id`, `user_id`, `date`, `d
 (12, 'Bad', 'Michael Jackson', 1, 3, '1987-08-31', 'Follow-up to Thriller.', 'https://example.com/images/bad.jpg'),
 (13, 'Jagged Little Pill', 'Alanis Morissette', 12, 3, '1995-06-13', 'Breakthrough album for Morissette.', 'https://example.com/images/jagged_little_pill.jpg'),
 (14, 'Nevermind', 'Nirvana', 13, 3, '1991-09-24', 'Defined the grunge era.', 'https://example.com/images/nevermind.jpg'),
-(15, 'Appetite for Destruction', 'Guns N\' Roses', 14, 3, '1987-07-21', 'Debut album by Guns N\' Roses.', 'https://example.com/images/appetite_for_destruction.jpg');
+(15, 'Appetite for Destruction', 'Guns N\' Roses', 14, 3, '1987-07-21', 'Debut album by Guns N\' Roses.', 'https://example.com/images/appetite_for_destruction.jpg'),
+(16, 'Slowdive', 'Slowdive', 9, 6, '2017-05-05', 'Sugar for the pill', 'https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/81/42/f5/8142f595-dc02-1b4f-0cea-b265ac6c85f3/656605143262.jpg/1400x1400bb.jpg'),
+(17, 'Fragile', 'Yes', 2, 6, '1972-01-04', 'Supergroup', 'images/Yes_Fragile.jpg');
 
 -- --------------------------------------------------------
 
@@ -112,7 +114,7 @@ CREATE TABLE `users` (
 INSERT INTO `users` (`id`, `username`, `email`, `password`, `role`, `authToken`) VALUES
 (3, 'zangyilin1997@gmail.com', 'zangyilin1997@gmail.com', '$2b$10$QsQMU/WReyJx83WFYYeyO.5rAsK9Z6dcBQFAvSFquSAB8T9cJOAYe', 'user', NULL),
 (4, 'jjd1024@foxmail.com', 'jjd1024@foxmail.com', '$2b$10$KY.2DZZAMuSwhcj.d9EiQu/1pj49NSj3tZAD2AuRqfQME6O.sNLJu', 'user', NULL),
-(5, 'admin@admin.com', 'admin@admin.com', '$2b$10$2lxB/IYHiaZLHKB2sBCzL.OlyCm59RVtwE1vGsZmdPykBsdoSViPS', 'admin', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NSwibmFtZSI6ImFkbWluQGFkbWluLmNvbSIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTcyMTM3MDQwOSwiZXhwIjoxNzIxMzc0MDA5fQ.7BX2wCSgQXzziNI53xlCkF9CVp99i9ss60O1FGOkYvQ'),
+(5, 'admin', 'admin@admin.com', '$2b$10$2lxB/IYHiaZLHKB2sBCzL.OlyCm59RVtwE1vGsZmdPykBsdoSViPS', 'admin', NULL),
 (6, 'j@j.com', 'j@j.com', '$2b$10$7mMSbITZeO7bMPwnKJxI7eG4eyla.AcGnnWiIodxmagJLpblTHX3C', 'user', NULL),
 (7, 'q@q.com', 'q@q.com', '$2b$10$WqryBTUTyh7mJq.e6TZ2buSx3Te0IJqcn/jfGFUTGiDNCVJx/DouG', 'user', NULL);
 
@@ -148,7 +150,7 @@ ALTER TABLE `users`
 -- 使用表AUTO_INCREMENT `card`
 --
 ALTER TABLE `card`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
 
 --
 -- 使用表AUTO_INCREMENT `category`
