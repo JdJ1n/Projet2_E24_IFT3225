@@ -7,13 +7,9 @@ document.addEventListener('DOMContentLoaded', async (event) => {
 
     var _showUsersCards = false;
 
-    const token = localStorage.getItem('token');
-
-    const active_user = await getActiveUser(token);
-
     await loadLogoutButton();
 
-    await loadBar(active_user);
+    await loadBar();
 
     Object.defineProperty(window, 'showUsersCards', {
         get: function () {
@@ -21,22 +17,21 @@ document.addEventListener('DOMContentLoaded', async (event) => {
         },
         set: async function (value) {
             _showUsersCards = value;
-            var resetButton = document.getElementById("resetButton");
-            resetButton.click();
+            document.getElementById("resetButton").click();
         }
     });
 
     //main function for update page
-    await showCards();
+    await showCurrentContents();
 
     document.getElementById("searchButton").addEventListener('click', async (e) => {
         //Apply current attrs for search
-        await showCards();
+        await showCurrentContents();
     })
 
     document.getElementById("resetButton").addEventListener('click', async (e) => {
         //reset here
-        await showCards();
+        await showCurrentContents();
     })
 
     console.log("Page loaded!")
@@ -72,7 +67,7 @@ async function authentification() {
     }
 }
 
-async function showCards() {
+async function showCurrentContents() {
     await authentification();
     const token = localStorage.getItem('token');
     await clearPagis();
@@ -125,7 +120,6 @@ async function showCards() {
         });
     });
 
-    // show page
     async function showPage(active_user, display_cards, pageNum) {
         await clearCards();
         await authentification();
@@ -166,19 +160,19 @@ async function createCard(card) {
     const cardElement = document.createElement('div');
     cardElement.className = 'col-sm-6 col-lg-4 mb-4 rounded';
     cardElement.innerHTML = `
-                    <div class="card rounded">
-                        <div class="bd-placeholder-img card-img-top">
-                            <img class="rounded-top" src=${card.url} alt="${card.name} - ${card.artist}" height="100%" width="100%" class="bd-placeholder-img" onerror="this.onerror=null; this.src='images/Default.png';">
-                        </div>
-                        <div class="card-body rounded-bottom">
-                            <h4 class="card-title">${card.name} - ${card.artist}</h4>
-                            <h5 class="card-text">${card.category_name}</h5>
-                            <h5 class="card-text">${new Date(card.date).toLocaleDateString()}</h5>
-                            <p class="card-text">${card.description}</p>
-                            <p class="card-text"><small>created by ${card.user_email}</small></p>
-                        </div>
-                    </div>
-                `;
+    <div class="card rounded">
+    <div class="bd-placeholder-img card-img-top">
+        <img class="rounded-top" src=${card.url} alt="${card.name} - ${card.artist}" height="100%" width="100%" class="bd-placeholder-img" onerror="this.onerror=null; this.src='images/Default.png';"></div>
+    <div class="card-body rounded-bottom">
+        <h4 class="card-title">${card.name} - ${card.artist}</h4>
+        <h5 class="card-text">${card.category_name}</h5>
+        <h5 class="card-text">${new Date(card.date).toLocaleDateString()}</h5>
+        <p class="card-text">${card.description}</p>
+        <p class="card-text">
+        <small>created by ${card.user_email}</small></p>
+    </div>
+    </div>
+    `;
 
     document.getElementById('card-contents').appendChild(cardElement);
 }
@@ -188,7 +182,7 @@ async function createEditableCard(card) {
     const cardElement = document.createElement('div');
     cardElement.className = 'col-sm-6 col-lg-4 mb-4 rounded';
     cardElement.innerHTML = `
-        <div class="card rounded">
+    <div class="card rounded">
         <div class="bd-placeholder-img card-img-top">
             <img class="rounded-top" src=${card.url} alt="${card.name} - ${card.artist}" height="100%" width="100%" class="bd-placeholder-img" onerror="this.onerror=null; this.src='images/Default.png';"></div>
         <div class="card-body rounded-bottom">
@@ -210,10 +204,9 @@ async function createEditableCard(card) {
                 <path d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4zM2.5 3h11V2h-11z" /></svg>
                 <span class="visually-hidden">Delete</span></button>
             </div>
-            <!-- options for edit end --></div>
         </div>
-        `;
-
+    </div>
+    `;
 
     const all_categories = await allCategories();
     const editCardForm = document.createElement('div');
@@ -222,48 +215,38 @@ async function createEditableCard(card) {
     editCardForm.role = 'dialog';
     editCardForm.tabindex = '-1';
     editCardForm.innerHTML = `
-                    <div class="modal-dialog" role="document">
-                      <div class="modal-content rounded-4 shadow">
-                        <div class="modal-header p-5 pb-4 border-bottom-0">
-                          <h1 class="fw-bold mb-0 fs-2">Modification d'une tuile</h1>
-                          <button id="closeEditForm${card.id}" type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body p-5 pt-0">
-                          <form id="edit_card_form_${card.id}">
-                            <div class="form-floating mb-3">
-                              <input id="edit_card_name_${card.id}" name="name" type="name" class="form-control rounded-3" placeholder="Nom d'album" value="${card.name}" required>
-                              <label for="edit_card_name_${card.id}">Nom d'album</label>
-                            </div>
-                            <div class="form-floating mb-3">
-                              <input id="edit_card_artist_${card.id}" name="artist" type="artist" class="form-control rounded-3" placeholder="Artiste" value="${card.artist}" required>
-                              <label for="edit_card_artist_${card.id}">Artiste</label>
-                            </div>
-                            <div class="form-floating mb-3">
-                              <select class="form-select" id="edit_card_category_${card.id}" required>
-                              </select>
-                              <label for="edit_card_category_${card.id}">Genre musical</label>
-                            </div>
-                            <div class="form-floating mb-3">
-                            <input id="edit_card_date_${card.id}" name="date" type="date" class="form-control rounded-3" placeholder="Date de sortie" value="${new Date(card.date).toISOString().slice(0, 10)}" required>
-                            <label for="edit_card_date_${card.id}">Date de sortie</label>
-                            </div>
-                            <div class="form-floating mb-3">
-                            <input id="edit_card_url_${card.id}" name="url" type="url" class="form-control rounded-3" placeholder="Lien vers la couverture d'album" value="${card.url}" required>
-                            <label for="edit_card_url_${card.id}">Lien vers la couverture d'album</label>
-                            </div>
-                            <div class="form-floating mb-3">
-                            <input id="edit_card_des_${card.id}" name="description" type="description" class="form-control rounded-3" placeholder="Description" value="${card.description}">
-                            <label for="edit_card_des_${card.id}">Description</label>
-                            </div>
-                            <button id="edit_card_clear_${card.id}" class="w-100 mb-2 btn btn-lg rounded-3 btn-outline-success"
-                            type="reset">Réinitialiser</button>
-                            <button id="edit_card_btn_${card.id}" class="w-100 mb-2 btn btn-lg rounded-3 btn-primary"
-                            type="submit">Modifier</button>
-                          </form>
-                        </div>
-                      </div>
-                    </div>
-                `;
+    <div class="modal-dialog" role="document">
+    <div class="modal-content rounded-4 shadow">
+        <div class="modal-header p-5 pb-4 border-bottom-0">
+        <h1 class="fw-bold mb-0 fs-2">Modification d'une tuile</h1>
+        <button id="closeEditForm${card.id}" type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body p-5 pt-0">
+        <form id="edit_card_form_${card.id}">
+            <div class="form-floating mb-3">
+            <input id="edit_card_name_${card.id}" name="name" type="name" class="form-control rounded-3" placeholder="Nom d'album" value="${card.name}" required>
+            <label for="edit_card_name_${card.id}">Nom d'album</label></div>
+            <div class="form-floating mb-3">
+            <input id="edit_card_artist_${card.id}" name="artist" type="artist" class="form-control rounded-3" placeholder="Artiste" value="${card.artist}" required>
+            <label for="edit_card_artist_${card.id}">Artiste</label></div>
+            <div class="form-floating mb-3">
+            <select class="form-select" id="edit_card_category_${card.id}" required></select>
+            <label for="edit_card_category_${card.id}">Genre musical</label></div>
+            <div class="form-floating mb-3">
+            <input id="edit_card_date_${card.id}" name="date" type="date" class="form-control rounded-3" placeholder="Date de sortie" value="${new Date(card.date).toISOString().slice(0, 10)}" required>
+            <label for="edit_card_date_${card.id}">Date de sortie</label></div>
+            <div class="form-floating mb-3">
+            <input id="edit_card_url_${card.id}" name="url" type="url" class="form-control rounded-3" placeholder="Lien vers la couverture d'album" value="${card.url}" required>
+            <label for="edit_card_url_${card.id}">Lien vers la couverture d'album</label></div>
+            <div class="form-floating mb-3">
+            <input id="edit_card_des_${card.id}" name="description" type="description" class="form-control rounded-3" placeholder="Description" value="${card.description}">
+            <label for="edit_card_des_${card.id}">Description</label></div>
+            <button id="edit_card_clear_${card.id}" class="w-100 mb-2 btn btn-lg rounded-3 btn-outline-success" type="reset">Réinitialiser</button>
+            <button id="edit_card_btn_${card.id}" class="w-100 mb-2 btn btn-lg rounded-3 btn-primary" type="submit">Modifier</button></form>
+        </div>
+    </div>
+    </div>       
+    `;
 
     let options = all_categories.map(category => {
         if (category.id === card.category_id) {
@@ -283,21 +266,20 @@ async function createEditableCard(card) {
     deleteCardModal.role = 'dialog';
     deleteCardModal.innerHTML = `
     <div class="modal-dialog">
-        <div class="modal-content rounded-4 shadow">
-          <div class="modal-header border-bottom-0">
-            <h1 class="fw-bold mb-0 fs-2">Suppression d'une tuile</h1>
-            <button id="closeDeleteModal${card.id}" type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-          </div>
-          <div class="modal-body py-0">
-            <p>Êtes-vous sûr de vouloir supprimer la tuile</p>
-            <p>${card.name} - ${card.artist} ?</p>
-          </div>
-          <div class="modal-footer flex-column align-items-stretch w-100 gap-2 pb-3 border-top-0">
-            <button id="delete_card_${card.id}" type="submit" class="btn btn-lg btn-danger">Confirmer</button>
-            <button type="button" class="btn btn-lg btn-secondary" data-bs-dismiss="modal">Annuler</button>
-          </div>
+    <div class="modal-content rounded-4 shadow">
+        <div class="modal-header border-bottom-0">
+        <h1 class="fw-bold mb-0 fs-2">Suppression d'une tuile</h1>
+        <button id="closeDeleteModal${card.id}" type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
-      </div>
+        <div class="modal-body py-0">
+        <p>Êtes-vous sûr de vouloir supprimer la tuile</p>
+        <p>${card.name} - ${card.artist} ?</p>
+        </div>
+        <div class="modal-footer flex-column align-items-stretch w-100 gap-2 pb-3 border-top-0">
+        <button id="delete_card_${card.id}" type="submit" class="btn btn-lg btn-danger">Confirmer</button>
+        <button type="button" class="btn btn-lg btn-secondary" data-bs-dismiss="modal">Annuler</button></div>
+    </div>
+    </div>
     `;
 
     document.getElementById('secondaryForm').appendChild(editCardForm);
@@ -308,7 +290,7 @@ async function createEditableCard(card) {
 
     editForm.addEventListener('submit', async function (event) {
         event.preventDefault();
-        
+
 
         const formData = new FormData(editForm);
         const tileData = {
@@ -447,17 +429,13 @@ async function addElement() {
     const cardElement = document.createElement('div');
     cardElement.className = 'col-sm-6 col-lg-4 mb-4 rounded';
     cardElement.innerHTML = `
-          <div class="card">
-            <div class="btn btn-sm btn-outline-secondary">
-              <a id="add" data-bs-toggle="modal" data-bs-target="#modalAddCard" href="#"
-                class="stretched-link card-text" aria-label="Add"
-                style="text-decoration: none; color: inherit; font-size: 2rem;">
-                +
-                <span class="visually-hidden">Add</span>
-              </a>
-            </div>
-          </div>
-                `;
+    <div class="card">
+    <div class="btn btn-sm btn-outline-secondary">
+        <a id="add" data-bs-toggle="modal" data-bs-target="#modalAddCard" href="#" class="stretched-link card-text" aria-label="Add" style="text-decoration: none; color: inherit; font-size: 2rem;">+
+        <span class="visually-hidden">Add</span></a>
+    </div>
+    </div>
+    `;
 
     const all_categories = await allCategories();
     const addCardForm = document.createElement('div');
@@ -466,49 +444,39 @@ async function addElement() {
     addCardForm.role = 'dialog';
     addCardForm.tabindex = '-1';
     addCardForm.innerHTML = `
-                    <div class="modal-dialog" role="document">
-                      <div class="modal-content rounded-4 shadow">
-                        <div class="modal-header p-5 pb-4 border-bottom-0">
-                          <h1 class="fw-bold mb-0 fs-2">Ajout d'une tuile</h1>
-                          <button id="closeAddForm" type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body p-5 pt-0">
-                          <form id="add_card_form">
-                            <div class="form-floating mb-3">
-                              <input id="add_card_name" name="name" type="name" class="form-control rounded-3" placeholder="Nom d'album" required>
-                              <label for="add_card_name">Nom d'album</label>
-                            </div>
-                            <div class="form-floating mb-3">
-                              <input id="add_card_artist" name="artist" type="artist" class="form-control rounded-3" placeholder="Artiste" required>
-                              <label for="add_card_artist">Artiste</label>
-                            </div>
-                            <div class="form-floating mb-3">
-                              <select class="form-select" id="add_card_category" required>
-                                <option selected disabled value="">Choisir...</option>
-                              </select>
-                              <label for="add_card_category">Genre musical</label>
-                            </div>
-                            <div class="form-floating mb-3">
-                            <input id="add_card_date" name="date" type="date" class="form-control rounded-3" placeholder="Date de sortie" required>
-                            <label for="add_card_date">Date de sortie</label>
-                            </div>
-                            <div class="form-floating mb-3">
-                            <input id="add_card_url" name="url" type="url" class="form-control rounded-3" placeholder="Lien vers la couverture d'album" required>
-                            <label for="add_card_url">Lien vers la couverture d'album</label>
-                            </div>
-                            <div class="form-floating mb-3">
-                            <input id="add_card_des" name="description" type="description" class="form-control rounded-3" placeholder="Description">
-                            <label for="add_card_des">Description</label>
-                            </div>
-                            <button id="add_card_clear" class="w-100 mb-2 btn btn-lg rounded-3 btn-outline-danger"
-                            type="reset">Effacer</button>
-                            <button id="add_card_btn" class="w-100 mb-2 btn btn-lg rounded-3 btn-primary"
-                            type="submit">Ajouter</button>
-                          </form>
-                        </div>
-                      </div>
-                    </div>
-                `;
+    <div class="modal-dialog" role="document">
+    <div class="modal-content rounded-4 shadow">
+        <div class="modal-header p-5 pb-4 border-bottom-0">
+        <h1 class="fw-bold mb-0 fs-2">Ajout d'une tuile</h1>
+        <button id="closeAddForm" type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body p-5 pt-0">
+        <form id="add_card_form">
+            <div class="form-floating mb-3">
+            <input id="add_card_name" name="name" type="name" class="form-control rounded-3" placeholder="Nom d'album" required>
+            <label for="add_card_name">Nom d'album</label></div>
+            <div class="form-floating mb-3">
+            <input id="add_card_artist" name="artist" type="artist" class="form-control rounded-3" placeholder="Artiste" required>
+            <label for="add_card_artist">Artiste</label></div>
+            <div class="form-floating mb-3">
+            <select class="form-select" id="add_card_category" required>
+                <option selected disabled value="">Choisir...</option></select>
+            <label for="add_card_category">Genre musical</label></div>
+            <div class="form-floating mb-3">
+            <input id="add_card_date" name="date" type="date" class="form-control rounded-3" placeholder="Date de sortie" required>
+            <label for="add_card_date">Date de sortie</label></div>
+            <div class="form-floating mb-3">
+            <input id="add_card_url" name="url" type="url" class="form-control rounded-3" placeholder="Lien vers la couverture d'album" required>
+            <label for="add_card_url">Lien vers la couverture d'album</label></div>
+            <div class="form-floating mb-3">
+            <input id="add_card_des" name="description" type="description" class="form-control rounded-3" placeholder="Description">
+            <label for="add_card_des">Description</label></div>
+            <button id="add_card_clear" class="w-100 mb-2 btn btn-lg rounded-3 btn-outline-danger" type="reset">Effacer</button>
+            <button id="add_card_btn" class="w-100 mb-2 btn btn-lg rounded-3 btn-primary" type="submit">Ajouter</button></form>
+        </div>
+    </div>
+    </div>
+    `;
 
     let options = all_categories.map(category => `<option value="${category.id}">${category.name}</option>`).join('\n');
     let selectElement = addCardForm.querySelector('#add_card_category');
@@ -614,13 +582,15 @@ async function getActiveUser(token) {
     }
 }
 
-async function loadBar(activeUser) {
+async function loadBar() {
+    const token = localStorage.getItem('token');
+    const activeUser = await getActiveUser(token);
     document.getElementById("welcomeBar").innerHTML = `
-        <h1>Bonjour, ${activeUser.username}</h1>
-        <p class="lead">Bienvenue dans le monde des albums de musique !</p>
-        <p class="lead">Utilisez la barre de recherche pour trouver plus rapidement la tuile que vous recherchez ! </p>
-        <p class="lead">Veuillez sélectionner une option valide dans les deux premières cases, puis entrez votre recherche dans la barre de recherche et cliquez sur Recherche.</p>
-        <p class="lead">En cliquant sur Effacer, vous videriez la barre de recherche et toutes les tuiles seront affichées.</p>
+    <h1>Bonjour, ${activeUser.username}</h1>
+    <p class="lead">Bienvenue dans le monde des albums de musique !</p>
+    <p class="lead">Utilisez la barre de recherche pour trouver plus rapidement la tuile que vous recherchez ! </p>
+    <p class="lead">Veuillez sélectionner une option valide dans les deux premières cases, puis entrez votre recherche dans la barre de recherche et cliquez sur Recherche.</p>
+    <p class="lead">En cliquant sur Effacer, vous videriez la barre de recherche et toutes les tuiles seront affichées.</p>
     `;
     if (activeUser.role === "admin") {
         loadAdminBar();
@@ -636,7 +606,8 @@ async function loadAdminBar() {
           </li>
           <li class="nav-item">
             <a class="nav-link active">Toutes les tuiles</a>
-          </li>`;
+          </li>
+    `;
 }
 
 async function loadUserBar() {
@@ -646,7 +617,8 @@ async function loadUserBar() {
           </li>
           <li class="nav-item">
             <a class="nav-link active" id="userPageAllCards">Toutes les tuiles</a>
-          </li>`;
+          </li>
+    `;
     await addNavBar();
 }
 
