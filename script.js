@@ -53,7 +53,7 @@ const connection = mysql.createConnection({
     host: 'localhost',
     user: 'root',
     password: 'root',
-    database: 'tp2'
+    database: 'yilin_tp2'
 });
 
 connection.connect((err) => {
@@ -149,6 +149,58 @@ function authenticateToken(req, res, next) {
         next();
     });
 }
+
+//------------------------------------------------serach part----------------------------------
+function getColumnFromAttr(attr) {
+    switch (attr) {
+        // case '2':
+        //     return 'user_id';
+        case '3':
+            return 'category_id';
+        case '4':
+            return 'name';
+        case '5':
+            return 'artist';
+        case '6':
+            return 'description';
+        default:
+            return 'name'; // Default column
+    }
+} 
+
+app.get('/api/cardssea', (req, res) => {
+    const serachData = req.query;
+    const method = serachData.method;
+    const attr = serachData.attr;
+    const search = serachData.search;
+    let query = 'SELECT * FROM card';
+    let queryParams = [];
+    
+    console.log("=======================")
+    console.log(`Received query params - Search: ${search}, Method: ${method}, Attr: ${attr}`);
+    
+    if (method && attr && search ) {
+        const searchColumn = getColumnFromAttr(attr);
+        
+        if (method === '1') { // Exact match
+            query += ` WHERE ${searchColumn} = ?`;
+            queryParams.push(search);
+        } else if (method === '2') { // Fuzzy search
+            query += ` WHERE ${searchColumn} LIKE ?`;
+            queryParams.push(`%${search}%`);
+        }
+    }
+
+    connection.query(query, queryParams, (err, results) => {
+        if (err) {
+            console.error('Error fetching cards:', err.message);
+            return res.status(500).json({ message: err.message });
+        }
+        res.json(results);
+    });
+});
+
+
 
 //-------------------------------------------ajout
 //liste tous les cartes

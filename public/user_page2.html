@@ -125,6 +125,38 @@
 
 
 <main class="container">
+  <!-- ---------------------------------------------------serach part ---------------------------------------------------------------------------------------------- -->
+  <div id="searchBar" class="bg-body-secondary">
+    <form class="d-flex rounded-3" role="search">
+
+      <label for="methodSelect" class="form-label visually-hidden">Mode de recherche</label>
+      <select class="form-select m-2 p-2" id="methodSelect">
+        <option selected="">Mode de recherche</option>
+        <option value="1">Correspondance exacte</option>
+        <option value="2">Recherche floue</option>
+      </select>
+
+      <div class="d-flex flex-column m-2">
+        <label for="attrSelect" class="form-label">Par différents critères</label>
+        <!-- <label for="attrSelect" class="form-label visually-hidden">Par</label> -->
+      <select class="form-select m-2 p-2" id="attrSelect">
+        <option selected="">vide</option>
+        <!-- <option value="1">Par tous</option> -->
+        <!-- <option value="2">Par utilisateur</option> -->
+        <option value="3">Par catégorie_id</option>
+        <option value="4">Par nom</option>
+        <option value="5">Par artiste</option>
+        <option value="6">Par description</option>
+      </select>
+      </div>
+      
+
+      <input id="searchInput" class="form-control m-2 p-2" type="search" placeholder="Rechercher" aria-label="Rechercher">
+      <button id="searchButton" class="btn btn-outline-success m-2 p-2" type="submit">Rechercher</button>
+    </form>
+
+  </div>
+  
   <div class="bg-body-tertiary p-5 rounded">
     <h1>Navbar example</h1>
     <p class="lead">This example is a quick exercise to illustrate how fixed to top navbar works. As you scroll, it will remain fixed to the top of your browser’s viewport.</p>
@@ -141,7 +173,8 @@
             <!-- <div class="card" id="addTileBtn" data-bs-toggle="modal" data-bs-target="#addTileModal"> -->
               <div class="card" id="addTileCard"></div>
                 <div class="card-body btn btn-sm btn-outline-secondary" id="addTileBtn">add
-                    <a href="#" class="stretched-link card-text">
+                  <!-- //href here doit enlever un attribut here  -->
+                    <a href="#" class="card-text"> 
                         <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="#6c757d" class="bi bi-plus card-text" viewBox="0 0 16 16">
                             <path d="M7.5 1.5a.5.5 0 0 1 .5.5v5h5a.5.5 0 0 1 0 1h-5v5a.5.5 0 0 1-1 0v-5h-5a.5.5 0 0 1 0-1h5v-5a.5.5 0 0 1 .5-.5z"/>
                         </svg>
@@ -222,15 +255,35 @@
     const tileList = document.getElementById('tileList');
     const addTileBtn = document.getElementById('addTileBtn');
     const addTileForm = document.getElementById('addTileForm');
+    //serche parts 
+    const searchButton = document.getElementById('searchButton');
+    const searchInput = document.getElementById('searchInput');
+    const methodSelect = document.getElementById('methodSelect');
+    const attrSelect = document.getElementById('attrSelect');
 
-    async function fetchTiles() {
-        const response = await fetch('/api/cards');
+    // async function fetchTiles() {
+    //     const response = await fetch('/api/cards');
+    //     const cards = await response.json();
+    //     tileList.innerHTML = '';
+    //     cards.forEach(card => {
+    //         const cardElement = createCardElement(card);
+    //         tileList.appendChild(cardElement);
+    //     });
+    // }
+
+    async function fetchTiles(search = '', method = '', attr = '') {
+      const response = await fetch(`/api/cardssea?search=${search}&method=${method}&attr=${attr}`);
+      if (response.ok) {
         const cards = await response.json();
+        console.log("Received response: ", cards);
         tileList.innerHTML = '';
         cards.forEach(card => {
             const cardElement = createCardElement(card);
             tileList.appendChild(cardElement);
         });
+      } else {
+        console.error("Error fetching tiles", response.status);
+      }
     }
 
     function createCardElement(card) {
@@ -244,7 +297,7 @@
                     <p class="card-text">${card.description}</p>
                     <div class="d-flex justify-content-between align-items-center">
                         <div class="btn-group">
-                            <button type="button" class="btn btn-sm btn-outline-secondary" data-id="${card.id}" onclick="viewCard(this)">View</button>
+                            // <button type="button" class="btn btn-sm btn-outline-secondary" data-id="${card.id}" onclick="viewCard(this)">View</button>
                             <button type="button" class="btn btn-sm btn-outline-secondary" data-id="${card.id}" onclick="editCard(this)">Edit</button>
                         </div>
                         <button type="button" class="btn btn-sm btn-outline-secondary" data-id="${card.id}" onclick="deleteCard(this)">Delete</button>
@@ -334,6 +387,16 @@
         //     });
         });
         
+//serach button -----------------------------------------------------------------
+     searchButton.addEventListener('click', async function (event) {
+                event.preventDefault();
+                alert("cehck bonto ");
+                const search = searchInput.value;
+                console.log(search);
+                const method = methodSelect.value;
+                const attr = attrSelect.value;
+                fetchTiles(search, method, attr);
+            });
 
     addTileForm.addEventListener('submit', async function (event) {
         event.preventDefault();
