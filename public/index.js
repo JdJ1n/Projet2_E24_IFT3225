@@ -51,7 +51,7 @@ document.addEventListener('DOMContentLoaded', async (event) => {
             setTimeout(async function () {
                 await paintCards();
                 await useMasonry();
-            }, 80);
+            }, 200);
 
         }
     } catch (err) {

@@ -1,43 +1,13 @@
 document.addEventListener('DOMContentLoaded', async (event) => {
 
     //Auth before load page
-    try {
-        console.log("Token check start.")
-        const token = localStorage.getItem('token');
-        if (!token) {
-            alert('Access denied.');
-            window.location.href = 'index.html';
-            return;
-        }
-        console.log("Auth start.")
-        const response = await fetch('/user/user_page', {
-            headers: {
-                'Authorization': 'Bearer ' + token
-            }
-        });
-        console.log("Auth finished.")
-        if (response.ok) {
-            console.log("Page start to load.");
-        } else {
-            const errorData = await response.json();
-            console.error('Failed to load page:', errorData.message);
-            alert('Failed to load page: ' + errorData.message);
-            window.location.href = 'index.html';
-            return;
-        }
+    await authentification();
 
-    } catch (err) {
-        console.error('Failed to load page:', err);
-        alert('An error occurred while loading the page. Please try again later.');
-        window.location.href = 'index.html';
-        return;
-    }
+    console.log("Page loading...")
 
     var _showUsersCards = false;
 
     const token = localStorage.getItem('token');
-
-    console.log("Page loading...")
 
     const active_user = await getActiveUser(token);
 
@@ -56,7 +26,6 @@ document.addEventListener('DOMContentLoaded', async (event) => {
         }
     });
 
-
     //main function for update page
     await showCards();
 
@@ -71,10 +40,40 @@ document.addEventListener('DOMContentLoaded', async (event) => {
     })
 
     console.log("Page loaded!")
-
 });
 
+async function authentification() {
+    try {
+        const token = localStorage.getItem('token');
+        if (!token) {
+            alert('Access denied.');
+            window.location.href = 'index.html';
+            return;
+        }
+        const response = await fetch('/user/user_page', {
+            headers: {
+                'Authorization': 'Bearer ' + token
+            }
+        });
+        if (response.ok) {
+            console.log("Authentification success.");
+        } else {
+            const errorData = await response.json();
+            console.error('Failed to load page:', errorData.message);
+            alert('Failed to load page: ' + errorData.message);
+            window.location.href = 'index.html';
+            return;
+        }
+    } catch (err) {
+        console.error('Failed to load page:', err);
+        alert('An error occurred while loading the page. Please try again later.');
+        window.location.href = 'index.html';
+        return;
+    }
+}
+
 async function showCards() {
+    await authentification();
     const token = localStorage.getItem('token');
     await clearPagis();
     const active_user = await getActiveUser(token);
@@ -129,6 +128,7 @@ async function showCards() {
     // show page
     async function showPage(active_user, display_cards, pageNum) {
         await clearCards();
+        await authentification();
         var start = (pageNum - 1) * 15;
         var end = start + 15;
         var page_cards = display_cards.slice(start, end);
@@ -147,7 +147,7 @@ async function showCards() {
         setTimeout(async function () {
             await paintCards();
             await useMasonry();
-        }, 80);
+        }, 200);
     }
 
 }
@@ -168,7 +168,7 @@ async function createCard(card) {
     cardElement.innerHTML = `
                     <div class="card rounded">
                         <div class="bd-placeholder-img card-img-top">
-                            <img class="rounded-top" src=${card.url} alt="${card.name} - ${card.artist}" height="100%" width="100%" class="bd-placeholder-img">
+                            <img class="rounded-top" src=${card.url} alt="${card.name} - ${card.artist}" height="100%" width="100%" class="bd-placeholder-img" onerror="this.onerror=null; this.src='images/Default.png';">
                         </div>
                         <div class="card-body rounded-bottom">
                             <h4 class="card-title">${card.name} - ${card.artist}</h4>
@@ -190,7 +190,7 @@ async function createEditableCard(card) {
     cardElement.innerHTML = `
         <div class="card rounded">
         <div class="bd-placeholder-img card-img-top">
-            <img class="rounded-top" src=${card.url} alt="${card.name} - ${card.artist}" height="100%" width="100%" class="bd-placeholder-img"></div>
+            <img class="rounded-top" src=${card.url} alt="${card.name} - ${card.artist}" height="100%" width="100%" class="bd-placeholder-img" onerror="this.onerror=null; this.src='images/Default.png';"></div>
         <div class="card-body rounded-bottom">
             <h4 class="card-title">${card.name} - ${card.artist}</h4>
             <h5 class="card-text">${card.category_name}</h5>
@@ -667,10 +667,14 @@ async function loadLogoutButton() {
             } else {
                 const errorData = await response.json();
                 alert('Failed to log out: ' + errorData.message);
+                window.location.href = 'index.html';
+                return;
             }
         } catch (err) {
             console.error('Failed to log out:', err);
             alert('An error occurred while logging out. Please try again later.');
+            window.location.href = 'index.html';
+            return;
         }
     });
 }
