@@ -137,17 +137,17 @@ async function showCards() {
             await addElement();
         }
         page_cards.forEach(async card => {
-
             if (active_user.role === 'user' && card.user_id != active_user.id) {
                 await createCard(card);
             } else {
                 await createEditableCard(card);
             }
         });
-        await paintCards();
+
         setTimeout(async function () {
+            await paintCards();
             await useMasonry();
-        }, 50);
+        }, 80);
     }
 
 }
@@ -184,6 +184,7 @@ async function createCard(card) {
 }
 
 async function createEditableCard(card) {
+    const active_user = await getActiveUser(localStorage.getItem('token'));
     const cardElement = document.createElement('div');
     cardElement.className = 'col-sm-6 col-lg-4 mb-4 rounded';
     cardElement.innerHTML = `
@@ -199,11 +200,11 @@ async function createEditableCard(card) {
             <small>created by ${card.user_email}</small></p>
             <!-- options for edit start -->
             <div class="d-flex justify-content-between align-items-center">
-            <button id="Edit_${card.id}" type="button" class="btn btn-sm btn-secondary" aria-label="Edit">
+            <button id="Edit_${card.id}" type="button" class="btn btn-sm btn-secondary" aria-label="Edit" data-bs-toggle="modal" data-bs-target="#modalEditCard${card.id}">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-fill" viewBox="0 0 16 16">
                 <path d="M12.854.146a.5.5 0 0 0-.707 0L10.5 1.793 14.207 5.5l1.647-1.646a.5.5 0 0 0 0-.708zm.646 6.061L9.793 2.5 3.293 9H3.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.207zm-7.468 7.468A.5.5 0 0 1 6 13.5V13h-.5a.5.5 0 0 1-.5-.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.5-.5V10h-.5a.5.5 0 0 1-.175-.032l-.179.178a.5.5 0 0 0-.11.168l-2 5a.5.5 0 0 0 .65.65l5-2a.5.5 0 0 0 .168-.11z" /></svg>
                 <span class="visually-hidden">Edit</span></button>
-            <button id="Delete_${card.id}" type="button" class="btn btn-sm btn-secondary" aria-label="Delete">
+            <button id="Delete_${card.id}" type="button" class="btn btn-sm btn-secondary" aria-label="Delete" data-bs-toggle="modal" data-bs-target="#modalDeleteCard${card.id}">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
                 <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0z" />
                 <path d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4zM2.5 3h11V2h-11z" /></svg>
@@ -212,7 +213,175 @@ async function createEditableCard(card) {
             <!-- options for edit end --></div>
         </div>
         `;
+
+
+    const all_categories = await allCategories();
+    const editCardForm = document.createElement('div');
+    editCardForm.className = 'modal fade p-5';
+    editCardForm.id = `modalEditCard${card.id}`;
+    editCardForm.role = 'dialog';
+    editCardForm.tabindex = '-1';
+    editCardForm.innerHTML = `
+                    <div class="modal-dialog" role="document">
+                      <div class="modal-content rounded-4 shadow">
+                        <div class="modal-header p-5 pb-4 border-bottom-0">
+                          <h1 class="fw-bold mb-0 fs-2">Modification d'une tuile</h1>
+                          <button id="closeEditForm${card.id}" type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body p-5 pt-0">
+                          <form id="edit_card_form_${card.id}">
+                            <div class="form-floating mb-3">
+                              <input id="edit_card_name_${card.id}" name="name" type="name" class="form-control rounded-3" placeholder="Nom d'album" value="${card.name}" required>
+                              <label for="edit_card_name_${card.id}">Nom d'album</label>
+                            </div>
+                            <div class="form-floating mb-3">
+                              <input id="edit_card_artist_${card.id}" name="artist" type="artist" class="form-control rounded-3" placeholder="Artiste" value="${card.artist}" required>
+                              <label for="edit_card_artist_${card.id}">Artiste</label>
+                            </div>
+                            <div class="form-floating mb-3">
+                              <select class="form-select" id="edit_card_category_${card.id}" required>
+                              </select>
+                              <label for="edit_card_category_${card.id}">Genre musical</label>
+                            </div>
+                            <div class="form-floating mb-3">
+                            <input id="edit_card_date_${card.id}" name="date" type="date" class="form-control rounded-3" placeholder="Date de sortie" value="${new Date(card.date).toISOString().slice(0, 10)}" required>
+                            <label for="edit_card_date_${card.id}">Date de sortie</label>
+                            </div>
+                            <div class="form-floating mb-3">
+                            <input id="edit_card_url_${card.id}" name="url" type="url" class="form-control rounded-3" placeholder="Lien vers la couverture d'album" value="${card.url}" required>
+                            <label for="edit_card_url_${card.id}">Lien vers la couverture d'album</label>
+                            </div>
+                            <div class="form-floating mb-3">
+                            <input id="edit_card_des_${card.id}" name="description" type="description" class="form-control rounded-3" placeholder="Description" value="${card.description}">
+                            <label for="edit_card_des_${card.id}">Description</label>
+                            </div>
+                            <button id="edit_card_clear_${card.id}" class="w-100 mb-2 btn btn-lg rounded-3 btn-outline-success"
+                            type="reset">Réinitialiser</button>
+                            <button id="edit_card_btn_${card.id}" class="w-100 mb-2 btn btn-lg rounded-3 btn-primary"
+                            type="submit">Modifier</button>
+                          </form>
+                        </div>
+                      </div>
+                    </div>
+                `;
+
+    let options = all_categories.map(category => {
+        if (category.id === card.category_id) {
+            return `<option value="${category.id}" selected>${category.name}</option>`;
+        } else {
+            return `<option value="${category.id}">${category.name}</option>`;
+        }
+    }).join('\n');
+
+    let selectElement = editCardForm.querySelector(`#edit_card_category_${card.id}`);
+    selectElement.innerHTML += options;
+
+    const deleteCardModal = document.createElement('div');
+    deleteCardModal.className = 'modal fade p-5';
+    deleteCardModal.id = `modalDeleteCard${card.id}`;
+    deleteCardModal.tabindex = '-1';
+    deleteCardModal.role = 'dialog';
+    deleteCardModal.innerHTML = `
+    <div class="modal-dialog">
+        <div class="modal-content rounded-4 shadow">
+          <div class="modal-header border-bottom-0">
+            <h1 class="fw-bold mb-0 fs-2">Suppression d'une tuile</h1>
+            <button id="closeDeleteModal${card.id}" type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body py-0">
+            <p>Êtes-vous sûr de vouloir supprimer la tuile</p>
+            <p>${card.name} - ${card.artist} ?</p>
+          </div>
+          <div class="modal-footer flex-column align-items-stretch w-100 gap-2 pb-3 border-top-0">
+            <button id="delete_card_${card.id}" type="submit" class="btn btn-lg btn-danger">Confirmer</button>
+            <button type="button" class="btn btn-lg btn-secondary" data-bs-dismiss="modal">Annuler</button>
+          </div>
+        </div>
+      </div>
+    `;
+
+    document.getElementById('secondaryForm').appendChild(editCardForm);
+    document.getElementById('secondaryForm').appendChild(deleteCardModal);
     document.getElementById('card-contents').appendChild(cardElement);
+
+    const editForm = document.getElementById(`edit_card_form_${card.id}`);
+
+    editForm.addEventListener('submit', async function (event) {
+        //event.preventDefault();
+        alert("edit btn work");
+
+        const formData = new FormData(editForm);
+        const tileData = {
+            id: card.id,
+            name: formData.get('name'),
+            artist: formData.get('artist'),
+            category_id: document.getElementById(`edit_card_category_${card.id}`).value,
+            user_id: active_user.id,
+            date: formData.get('date'),
+            description: formData.get('description'),
+            url: formData.get('url')
+        };
+        console.log("----------------------------------------------------------------------------------");
+        console.log(tileData);
+        console.log("----------------------------------------------------------------------------------");
+        /*
+        const response = await fetch('/api/cardstest', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(tileData)
+        });
+
+        if (response.ok) {
+            alert('Tile added successfully');
+            addTileForm.reset();
+            fetchTiles();
+            const modal = bootstrap.Modal.getInstance(document.getElementById('addTileModal'));
+            modal.hide();
+        } else {
+            alert('super sad !Error adding tile');
+        }*/
+
+        document.getElementById(`closeEditForm${card.id}`).click();
+        document.getElementById("resetButton").click();
+    });
+
+    const deleteCard = document.getElementById(`delete_card_${card.id}`);
+
+    deleteCard.addEventListener('click', async function (event) {
+
+        alert("delete btn work");
+
+        const deleteData = {
+            id: card.id
+        };
+        console.log("----------------------------------------------------------------------------------");
+        console.log(deleteData);
+        console.log("----------------------------------------------------------------------------------");
+        /*
+        const response = await fetch('/api/cardstest', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(tileData)
+        });
+
+        if (response.ok) {
+            alert('Tile added successfully');
+            addTileForm.reset();
+            fetchTiles();
+            const modal = bootstrap.Modal.getInstance(document.getElementById('addTileModal'));
+            modal.hide();
+        } else {
+            alert('super sad !Error adding tile');
+        }*/
+
+        document.getElementById(`closeDeleteModal${card.id}`).click();
+        document.getElementById("resetButton").click();
+
+    });
 }
 
 async function allCards(token) {
@@ -272,6 +441,7 @@ async function paintCards() {
 
 
 async function addElement() {
+    const active_user = await getActiveUser(localStorage.getItem('token'));
     const cardElement = document.createElement('div');
     cardElement.className = 'col-sm-6 col-lg-4 mb-4 rounded';
     cardElement.innerHTML = `
@@ -298,7 +468,7 @@ async function addElement() {
                       <div class="modal-content rounded-4 shadow">
                         <div class="modal-header p-5 pb-4 border-bottom-0">
                           <h1 class="fw-bold mb-0 fs-2">Ajout d'une tuile</h1>
-                          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                          <button id="closeAddForm" type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body p-5 pt-0">
                           <form id="add_card_form">
@@ -311,7 +481,7 @@ async function addElement() {
                               <label for="add_card_artist">Artiste</label>
                             </div>
                             <div class="form-floating mb-3">
-                              <select class="form-select" id="add_card_category" >
+                              <select class="form-select" id="add_card_category" required>
                                 <option selected disabled value="">Choisir...</option>
                               </select>
                               <label for="add_card_category">Genre musical</label>
@@ -325,13 +495,13 @@ async function addElement() {
                             <label for="add_card_url">Lien vers la couverture d'album</label>
                             </div>
                             <div class="form-floating mb-3">
-                            <input id="add_card_des" type="description" class="form-control rounded-3" placeholder="Description">
+                            <input id="add_card_des" name="description" type="description" class="form-control rounded-3" placeholder="Description">
                             <label for="add_card_des">Description</label>
                             </div>
                             <button id="add_card_clear" class="w-100 mb-2 btn btn-lg rounded-3 btn-outline-danger"
                             type="reset">Effacer</button>
                             <button id="add_card_btn" class="w-100 mb-2 btn btn-lg rounded-3 btn-primary"
-                            type="button">Ajouter</button>
+                            type="submit">Ajouter</button>
                           </form>
                         </div>
                       </div>
@@ -344,6 +514,44 @@ async function addElement() {
 
     document.getElementById('secondaryForm').appendChild(addCardForm);
     document.getElementById('card-contents').appendChild(cardElement);
+    document.getElementById('add_card_form').addEventListener('submit', async function (event) {
+        event.preventDefault();
+        alert("submit btn work");
+
+        const formData = new FormData(add_card_form);
+        const tileData = {
+            name: formData.get('name'),
+            artist: formData.get('artist'),
+            category_id: document.getElementById('add_card_category').value,
+            user_id: active_user.id,
+            date: formData.get('date'),
+            description: formData.get('description'),//? formData.get('description') : ""
+            url: formData.get('url')
+        };
+        console.log("----------------------------------------------------------------------------------");
+        console.log(tileData);
+        console.log("----------------------------------------------------------------------------------");
+        /*
+        const response = await fetch('/api/cardstest', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(tileData)
+        });
+
+        if (response.ok) {
+            alert('Tile added successfully');
+            addTileForm.reset();
+            fetchTiles();
+            const modal = bootstrap.Modal.getInstance(document.getElementById('addTileModal'));
+            modal.hide();
+        } else {
+            alert('super sad !Error adding tile');
+        }*/
+        document.getElementById("closeAddForm").click();
+        document.getElementById("resetButton").click();
+    });
 }
 
 async function useMasonry() {
@@ -356,6 +564,10 @@ async function clearCards() {
     const cardContainer = document.getElementById('card-contents');
     while (cardContainer.firstChild) {
         cardContainer.removeChild(cardContainer.firstChild);
+    }
+    const formContainer = document.getElementById('secondaryForm');
+    while (formContainer.firstChild) {
+        formContainer.removeChild(formContainer.firstChild);
     }
 }
 
