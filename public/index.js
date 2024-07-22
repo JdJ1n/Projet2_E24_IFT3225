@@ -83,6 +83,12 @@ document.addEventListener('DOMContentLoaded', async (event) => {
     } catch (err) {
         console.error(err);
     }
+
+    setTimeout(function() {
+        var msnry = new Masonry(document.getElementById('card-contents'), {
+            percentPosition: true
+        });
+    }, 500);
 });
 
 async function login(email, password) {
