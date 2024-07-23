@@ -31,7 +31,7 @@ router.post('/add_card', authentification, async (req, res) => {
     }
 });
 
-router.delete('/edit_card', authentification, async (req, res) => {
+router.put('/edit_card', authentification, async (req, res) => {
     const cardData = req.body;
     const query = 'UPDATE card SET name = ?, artist = ?, category_id = ?, user_id = ?, date = ?, description = ?, url = ? WHERE id = ?';
     const values = [cardData.name, cardData.artist, cardData.category_id, cardData.user_id, cardData.date, cardData.description, cardData.url, cardData.id];
