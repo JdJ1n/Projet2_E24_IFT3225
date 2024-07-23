@@ -19,25 +19,17 @@ router.get('/user_cards', authentification, asyncHandler(async (req, res) => {
     res.json(cards);
 }));
 
-router.post('/add_card', authentification, asyncHandler(async (req, res) => {
+router.post('/add_card', authentification, async (req, res) => {
     const cardData = req.body;
     const query = 'INSERT INTO card (name, artist, category_id, user_id, date, description, url) VALUES (?, ?, ?, ?, ?, ?, ?)';
-    const values = [cardData.name, cardData.artist, cardData.category_id, cardData.user_id, cardData.date, cardData.description, cardData.url];
-
-    db.query(query, values, (err, results) => {
-        if (err) {
-            console.error('Error inserting data:', err);
-            res.status(500).json({ message: 'Error inserting data' });
-            return;
-        }
-        console.log('Card added, ID:', results.insertId);
-        res.status(201).json({ message: 'Card added', cardId: results.insertId });
-
-        // Broadcast card added event
-        // io.emit('cardAdded', { id: results.insertId, name, artist, category_id, user_id, date, description, url });
-    });
-}));
-
+    const values = [cardData.name, cardData.artist, cardData.category_id, req.user.id, cardData.date, cardData.description, cardData.url];
+    const [result] = await db.query(query, values); 
+    if(result.affectedRows > 0){
+        res.json({message: "Card added successfully", cardId: result.insertId});
+    } else {
+        res.status(500).json({message: "Error adding card"});
+    }
+});
 
 
 // random 15 cards for index.html

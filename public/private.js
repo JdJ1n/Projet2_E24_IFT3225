@@ -130,18 +130,17 @@ async function showCurrentContents() {
         if (active_user.role === 'user' && showUsersCards) {
             await addElement();
         }
-        page_cards.forEach(async card => {
+        
+        await Promise.all(page_cards.map(async card => {
             if (active_user.role === 'user' && card.user_id != active_user.id) {
-                await createCard(card);
+                return createCard(card);
             } else {
-                await createEditableCard(card);
+                return createEditableCard(card);
             }
-        });
-
-        setTimeout(async function () {
-            await paintCards();
-            await useMasonry();
-        }, 200);
+        }));
+        
+        await paintCards();
+        await useMasonry();
     }
 
 }
@@ -149,6 +148,8 @@ async function showCurrentContents() {
 async function cardFilter(active_user, cards) {
     const option1 = document.getElementById('methodSelect').value;
     const option2 = document.getElementById('attrSelect').value;
+    //cards[0].id;
+    //cards[0].
     if (active_user.role === 'user' && showUsersCards) {
         const filtered_cards = cards.filter(card => card.user_id == active_user.id);
         return filtered_cards;
@@ -427,7 +428,8 @@ async function addElement() {
     cardElement.innerHTML = `
     <div class="card">
     <div class="btn btn-sm btn-outline-secondary">
-        <a id="add" data-bs-toggle="modal" data-bs-target="#modalAddCard" href="#" class="stretched-link card-text" aria-label="Add" style="text-decoration: none; color: inherit; font-size: 2rem;">+
+        <a data-bs-toggle="modal" data-bs-target="#modalAddCard" href="#" class="stretched-link card-text" aria-label="Add" style="text-decoration: none; color: inherit; font-size: 2rem;">
+        +
         <span class="visually-hidden">Add</span></a>
     </div>
     </div>
@@ -491,7 +493,7 @@ async function addElement() {
             category_id: document.getElementById('add_card_category').value,
             user_id: active_user.id,
             date: formData.get('date'),
-            description: formData.get('description'),//? formData.get('description') : ""
+            description: formData.get('description'),
             url: formData.get('url')
         };
         console.log("----------------------------------------------------------------------------------");
@@ -512,13 +514,9 @@ async function addElement() {
 
         if (response.ok) {
             //document.getElementById("closeAddForm").click();
-            document.getElementById("resetButton").click();
+            //document.getElementById("resetButton").click();
             alert('Tile added successfully');
 
-            /*addTileForm.reset();
-            fetchTiles();
-            const modal = bootstrap.Modal.getInstance(document.getElementById('addTileModal'));
-            modal.hide();*/
         } else {
             alert('super sad !Error adding tile');
         }
