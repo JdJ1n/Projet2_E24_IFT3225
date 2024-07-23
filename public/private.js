@@ -290,8 +290,6 @@ async function createEditableCard(card) {
 
     editForm.addEventListener('submit', async function (event) {
         event.preventDefault();
-
-
         const formData = new FormData(editForm);
         const tileData = {
             id: card.id,
@@ -309,7 +307,7 @@ async function createEditableCard(card) {
 
         alert("edit btn work");
         /*
-        const response = await fetch('/api/cardstest', {
+        const response = await fetch('/card/edit_card', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -318,11 +316,8 @@ async function createEditableCard(card) {
         });
 
         if (response.ok) {
-            alert('Tile added successfully');
-            addTileForm.reset();
-            fetchTiles();
-            const modal = bootstrap.Modal.getInstance(document.getElementById('addTileModal'));
-            modal.hide();
+            
+            alert('ok')
         } else {
             alert('super sad !Error adding tile');
         }*/
@@ -425,7 +420,8 @@ async function paintCards() {
 
 
 async function addElement() {
-    const active_user = await getActiveUser(localStorage.getItem('token'));
+    const token = localStorage.getItem('token');
+    const active_user = await getActiveUser(token);
     const cardElement = document.createElement('div');
     cardElement.className = 'col-sm-6 col-lg-4 mb-4 rounded';
     cardElement.innerHTML = `
@@ -501,24 +497,31 @@ async function addElement() {
         console.log("----------------------------------------------------------------------------------");
         console.log(tileData);
         console.log("----------------------------------------------------------------------------------");
-        /*
-        const response = await fetch('/api/cardstest', {
+
+        const response = await fetch('/card/add_card', {
             method: 'POST',
             headers: {
+                'Authorization': 'Bearer ' + token,
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify(tileData)
         });
 
+        console.log('Status:', response.status);
+        console.log('Status Text:', response.statusText);
+
         if (response.ok) {
+            //document.getElementById("closeAddForm").click();
+            document.getElementById("resetButton").click();
             alert('Tile added successfully');
-            addTileForm.reset();
+
+            /*addTileForm.reset();
             fetchTiles();
             const modal = bootstrap.Modal.getInstance(document.getElementById('addTileModal'));
-            modal.hide();
+            modal.hide();*/
         } else {
             alert('super sad !Error adding tile');
-        }*/
+        }
         document.getElementById("closeAddForm").click();
         document.getElementById("resetButton").click();
     });
