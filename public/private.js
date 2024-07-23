@@ -141,7 +141,7 @@ async function showCurrentContents() {
         setTimeout(async function () {
             await paintCards();
             await useMasonry();
-        }, 200);
+        }, 500);
     }
 
 }
@@ -149,6 +149,8 @@ async function showCurrentContents() {
 async function cardFilter(active_user, cards) {
     const option1 = document.getElementById('methodSelect').value;
     const option2 = document.getElementById('attrSelect').value;
+    //cards[0].id;
+    //cards[0].
     if (active_user.role === 'user' && showUsersCards) {
         const filtered_cards = cards.filter(card => card.user_id == active_user.id);
         return filtered_cards;
@@ -491,7 +493,7 @@ async function addElement() {
             category_id: document.getElementById('add_card_category').value,
             user_id: active_user.id,
             date: formData.get('date'),
-            description: formData.get('description'),//? formData.get('description') : ""
+            description: formData.get('description'),
             url: formData.get('url')
         };
         console.log("----------------------------------------------------------------------------------");
@@ -512,13 +514,9 @@ async function addElement() {
 
         if (response.ok) {
             //document.getElementById("closeAddForm").click();
-            document.getElementById("resetButton").click();
+            //document.getElementById("resetButton").click();
             alert('Tile added successfully');
 
-            /*addTileForm.reset();
-            fetchTiles();
-            const modal = bootstrap.Modal.getInstance(document.getElementById('addTileModal'));
-            modal.hide();*/
         } else {
             alert('super sad !Error adding tile');
         }
