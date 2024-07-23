@@ -73,10 +73,7 @@ async function login(email, password) {
 
         if (data.token) {
             localStorage.setItem('token', data.token);
-            const storedToken = localStorage.getItem('token');
-            console.log('Stored token:', storedToken);
-
-            alert('Login successful');
+            console.log('Login successful');
             window.location.href = "/private.html";
         } else {
             alert(data.message);
