@@ -48,10 +48,8 @@ document.addEventListener('DOMContentLoaded', async (event) => {
         } else {
             const cards = await response.json();
             await addCards(cards);
-            setTimeout(async function () {
-                await paintCards();
-                await useMasonry();
-            }, 500);
+            await paintCards();
+            await useMasonry();
 
         }
     } catch (err) {
