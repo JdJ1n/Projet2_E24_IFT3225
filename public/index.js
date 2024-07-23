@@ -48,8 +48,11 @@ document.addEventListener('DOMContentLoaded', async (event) => {
         } else {
             const cards = await response.json();
             await addCards(cards);
-            await paintCards();
-            await useMasonry();
+
+            setTimeout(async function () {
+                await paintCards();
+                await useMasonry();
+            }, 256);
 
         }
     } catch (err) {
@@ -101,7 +104,7 @@ async function addCards(cards) {
 
     const cardContainer = document.getElementById('card-contents');
 
-    cards.forEach(card => {
+    for (const card of cards) {
         const cardElement = document.createElement('div');
         cardElement.className = 'col-sm-6 col-lg-4 mb-4 rounded';
         cardElement.innerHTML = `
@@ -119,8 +122,7 @@ async function addCards(cards) {
                     </div>
                 `;
         cardContainer.appendChild(cardElement);
-    });
-
+    }
 }
 
 async function useMasonry() {

@@ -25,12 +25,10 @@ document.addEventListener('DOMContentLoaded', async (event) => {
     await showCurrentContents();
 
     document.getElementById("searchButton").addEventListener('click', async (e) => {
-        //Apply current attrs for search
         await showCurrentContents();
     })
 
     document.getElementById("resetButton").addEventListener('click', async (e) => {
-        //reset here
         await showCurrentContents();
     })
 
@@ -212,7 +210,6 @@ function fuzzySearch(attr, input, cards) {
     }
 }
 
-
 async function createCard(card) {
     const cardElement = document.createElement('div');
     cardElement.className = 'col-sm-6 col-lg-4 mb-4 rounded';
@@ -230,7 +227,6 @@ async function createCard(card) {
     </div>
     </div>
     `;
-
     document.getElementById('card-contents').appendChild(cardElement);
 }
 
@@ -359,11 +355,6 @@ async function createEditableCard(card) {
             description: formData.get('description'),
             url: formData.get('url')
         };
-        /*console.log("----------------------------------------------------------------------------------");
-        console.log(tileData);
-        console.log("----------------------------------------------------------------------------------");*/
-
-        //alert("edit btn work");
 
         const response = await fetch('/card/edit_card', {
             method: 'PUT',
@@ -374,13 +365,11 @@ async function createEditableCard(card) {
             body: JSON.stringify(tileData)
         });
         if (response.ok) {
-            console.log('Tile updated successfully');
+            console.log('Tuile updated successfully');
         } else {
             console.log('Status:', response.status);
             console.log('Status Text:', response.statusText);
-            alert('super sad !Error uodating tile');
         }
-
         document.getElementById(`closeEditForm${card.id}`).click();
         document.getElementById("resetButton").click();
     });
@@ -389,14 +378,9 @@ async function createEditableCard(card) {
 
     deleteCard.addEventListener('click', async function (event) {
 
-        //alert("delete btn work");
-
         const deleteData = {
             id: card.id
         };
-        /*console.log("----------------------------------------------------------------------------------");
-        console.log(deleteData);
-        console.log("----------------------------------------------------------------------------------");*/
         const response = await fetch('/card/delete_card', {
             method: 'DELETE',
             headers: {
@@ -406,16 +390,13 @@ async function createEditableCard(card) {
             body: JSON.stringify(deleteData)
         });
         if (response.ok) {
-            console.log('Tile deleted successfully');
+            console.log('Tuile deleted successfully');
         } else {
             console.log('Status:', response.status);
             console.log('Status Text:', response.statusText);
-            alert('super sad !Error deleting tile');
         }
-
         document.getElementById(`closeDeleteModal${card.id}`).click();
         document.getElementById("resetButton").click();
-
     });
 }
 
@@ -472,7 +453,6 @@ async function paintCards() {
         card.classList.add(...classes);
     });
 }
-
 
 
 async function addElement() {
@@ -539,7 +519,6 @@ async function addElement() {
     document.getElementById('card-contents').appendChild(cardElement);
     document.getElementById('add_card_form').addEventListener('submit', async function (event) {
         event.preventDefault();
-        //alert("submit btn work");
 
         const formData = new FormData(add_card_form);
         const tileData = {
@@ -551,9 +530,6 @@ async function addElement() {
             description: formData.get('description'),
             url: formData.get('url')
         };
-        /*console.log("----------------------------------------------------------------------------------");
-        console.log(tileData);
-        console.log("----------------------------------------------------------------------------------");*/
 
         const response = await fetch('/card/add_card', {
             method: 'POST',
@@ -564,11 +540,10 @@ async function addElement() {
             body: JSON.stringify(tileData)
         });
         if (response.ok) {
-            console.log('Tile added successfully');
+            console.log('Tuile added successfully');
         } else {
             console.log('Status:', response.status);
             console.log('Status Text:', response.statusText);
-            alert('super sad !Error adding tile');
         }
         document.getElementById("closeAddForm").click();
         document.getElementById("resetButton").click();
@@ -640,7 +615,7 @@ async function loadBar() {
     <h1>Bonjour, ${activeUser.username}</h1>
     <p class="lead">Bienvenue dans le monde des albums de musique !</p>
     <p class="lead">Utilisez la barre de recherche pour trouver plus rapidement la tuile que vous recherchez ! </p>
-    <p class="lead">Veuillez noter que vous ne pouvez effectuer un filtrage en cliquant sur le bouton de recherche que lorsque des options valides sont sélectionnées dans les deux premières cases et que la barre de recherche n'est pas vide.</p>
+    <p class="lead">Veuillez noter que vous ne pouvez effectuer un filtrage en cliquant sur Rechercher que lorsque des options valides sont sélectionnées dans les deux premières cases et que la barre de recherche n'est pas vide.</p>
     <p class="lead">En cliquant sur Effacer, vous videriez la barre de recherche et toutes les tuiles seront affichées.</p>
     <p class="lead">Si vous souhaitez voir toutes les tuiles que vous avez créées ou créer une nouvelle tuile, veuillez cliquer sur 'Vos tuiles' en haut.</p>
     <p class="lead">Veuillez noter que si vous n'êtes pas administrateur, vous ne pouvez modifier ou supprimer que les tuiles que vous avez créées vous-même.</p>

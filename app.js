@@ -16,13 +16,13 @@ app.use('/user', userRoutes);
 app.use('/card', cardRoutes);
 app.use('/cate', categoryRoutes);
 
-// Error handling middleware
+// Error handling
 app.use((err, req, res, next) => {
     console.error(err.stack);
     res.status(500).json({ message: 'An unexpected error occurred. Please try again later.' });
 });
 
-// start server
+// Start server
 app.listen(PORT, (err) => {
     if (err) {
         console.error('Server failed to start:', err.stack);
