@@ -204,6 +204,9 @@
   </nav>
 
   <main class="container">
+
+
+
     <div class="bg-body-tertiary p-5 rounded">
       <h1>Les tuiles d'albums</h1>
       <p class="lead">Voici 15 tuiles d'albums aléatoires que nos utilisateurs ont partagées par amour pour la musique.
@@ -231,8 +234,8 @@
                 <input type="password" class="form-control rounded-3" id="floatingPassword" placeholder="Password">
                 <label for="floatingPassword">Mot de passe</label>
               </div>
-              <button id="userSignup" class="w-100 mb-2 btn btn-lg rounded-3 btn-primary"
-                type="submit">Inscription</button>
+              <button id="userSignup" class="w-100 mb-2 btn btn-lg rounded-3 btn-outline-primary"
+                type="button">Inscription</button>
               <button id="userlogin" class="w-100 mb-2 btn btn-lg rounded-3 btn-primary"
                 type="button">Connexion</button>
               <small>En cliquant sur Inscription, vous acceptez les conditions d'utilisation.</small>
@@ -251,28 +254,14 @@
     </div>
 
     <div class="bg-body-tertiary p-5 rounded">
-      <div id="card-contents" class="row" data-masonry="{&quot;percentPosition&quot;: true }">
-        <!-- cards elements start here -->
-        <!-- 
-      <div class="col-sm-6 col-lg-4 mb-4 rounded">
-        <div class="card rounded">
-            <div class="bd-placeholder-img card-img-top">
-                <img class="rounded-top" src="images/Yes_Fragile.jpg" alt="Fragile" height="100%" width="100%" class="bd-placeholder-img">
-            </div>
-            <div class="card-body rounded-bottom">
-                <h4 class="card-title">Yes - Fragile</h4>
-                <h5 class="card-text">Rock</h5>
-                <p class="card-text">This card has supporting text below as a natural lead-in to additional content.This card has supporting text below as a natural lead-in to additional content.This card has supporting text below as a natural lead-in to additional content.</p>
-                <p class="card-text"><small>created by jiadong.jin@umontreal.ca</small></p>
-            </div>
-        </div>
-      </div>
-      -->
+      <div id="card-contents" class="row" data-masonry='{"percentPosition": true }'>
       </div>
     </div>
   </main>
 
   <script src="assets/dist/js/bootstrap.bundle.min.js"></script>
+
+  <script src="masonry.pkgd.min.js"></script>
 
   <script src="index.js"></script>
 
