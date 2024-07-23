@@ -130,7 +130,7 @@ async function showCurrentContents() {
         if (active_user.role === 'user' && showUsersCards) {
             await addElement();
         }
-        
+
         await Promise.all(page_cards.map(async card => {
             if (active_user.role === 'user' && card.user_id != active_user.id) {
                 return createCard(card);
@@ -138,7 +138,7 @@ async function showCurrentContents() {
                 return createEditableCard(card);
             }
         }));
-        
+
         await paintCards();
         await useMasonry();
     }
@@ -179,6 +179,7 @@ async function createCard(card) {
 }
 
 async function createEditableCard(card) {
+    const token = localStorage.getItem('token');
     const active_user = await getActiveUser(localStorage.getItem('token'));
     const cardElement = document.createElement('div');
     cardElement.className = 'col-sm-6 col-lg-4 mb-4 rounded';
@@ -302,26 +303,27 @@ async function createEditableCard(card) {
             description: formData.get('description'),
             url: formData.get('url')
         };
-        console.log("----------------------------------------------------------------------------------");
+        /*console.log("----------------------------------------------------------------------------------");
         console.log(tileData);
-        console.log("----------------------------------------------------------------------------------");
+        console.log("----------------------------------------------------------------------------------");*/
 
-        alert("edit btn work");
-        /*
+        //alert("edit btn work");
+
         const response = await fetch('/card/edit_card', {
-            method: 'POST',
+            method: 'PUT',
             headers: {
+                'Authorization': 'Bearer ' + token,
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify(tileData)
         });
-
         if (response.ok) {
-            
-            alert('ok')
+            console.log('Tile updated successfully');
         } else {
-            alert('super sad !Error adding tile');
-        }*/
+            console.log('Status:', response.status);
+            console.log('Status Text:', response.statusText);
+            alert('super sad !Error uodating tile');
+        }
 
         document.getElementById(`closeEditForm${card.id}`).click();
         document.getElementById("resetButton").click();
@@ -331,32 +333,29 @@ async function createEditableCard(card) {
 
     deleteCard.addEventListener('click', async function (event) {
 
-        alert("delete btn work");
+        //alert("delete btn work");
 
         const deleteData = {
             id: card.id
         };
-        console.log("----------------------------------------------------------------------------------");
+        /*console.log("----------------------------------------------------------------------------------");
         console.log(deleteData);
-        console.log("----------------------------------------------------------------------------------");
-        /*
-        const response = await fetch('/api/cardstest', {
-            method: 'POST',
+        console.log("----------------------------------------------------------------------------------");*/
+        const response = await fetch('/card/delete_card', {
+            method: 'DELETE',
             headers: {
+                'Authorization': 'Bearer ' + token,
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify(tileData)
+            body: JSON.stringify(deleteData)
         });
-
         if (response.ok) {
-            alert('Tile added successfully');
-            addTileForm.reset();
-            fetchTiles();
-            const modal = bootstrap.Modal.getInstance(document.getElementById('addTileModal'));
-            modal.hide();
+            console.log('Tile deleted successfully');
         } else {
-            alert('super sad !Error adding tile');
-        }*/
+            console.log('Status:', response.status);
+            console.log('Status Text:', response.statusText);
+            alert('super sad !Error deleting tile');
+        }
 
         document.getElementById(`closeDeleteModal${card.id}`).click();
         document.getElementById("resetButton").click();
@@ -484,7 +483,7 @@ async function addElement() {
     document.getElementById('card-contents').appendChild(cardElement);
     document.getElementById('add_card_form').addEventListener('submit', async function (event) {
         event.preventDefault();
-        alert("submit btn work");
+        //alert("submit btn work");
 
         const formData = new FormData(add_card_form);
         const tileData = {
@@ -496,9 +495,9 @@ async function addElement() {
             description: formData.get('description'),
             url: formData.get('url')
         };
-        console.log("----------------------------------------------------------------------------------");
+        /*console.log("----------------------------------------------------------------------------------");
         console.log(tileData);
-        console.log("----------------------------------------------------------------------------------");
+        console.log("----------------------------------------------------------------------------------");*/
 
         const response = await fetch('/card/add_card', {
             method: 'POST',
@@ -508,16 +507,11 @@ async function addElement() {
             },
             body: JSON.stringify(tileData)
         });
-
-        console.log('Status:', response.status);
-        console.log('Status Text:', response.statusText);
-
         if (response.ok) {
-            //document.getElementById("closeAddForm").click();
-            //document.getElementById("resetButton").click();
-            alert('Tile added successfully');
-
+            console.log('Tile added successfully');
         } else {
+            console.log('Status:', response.status);
+            console.log('Status Text:', response.statusText);
             alert('super sad !Error adding tile');
         }
         document.getElementById("closeAddForm").click();

@@ -31,6 +31,32 @@ router.post('/add_card', authentification, async (req, res) => {
     }
 });
 
+router.delete('/edit_card', authentification, async (req, res) => {
+    const cardData = req.body;
+    const query = 'UPDATE card SET name = ?, artist = ?, category_id = ?, user_id = ?, date = ?, description = ?, url = ? WHERE id = ?';
+    const values = [cardData.name, cardData.artist, cardData.category_id, req.user.id, cardData.date, cardData.description, cardData.url, cardData.id];
+    const [result] = await db.query(query, values);
+    if(result.affectedRows > 0){
+        res.json({message: "Card updated successfully"});
+    } else {
+        res.status(500).json({message: "Error updating card"});
+    }
+});
+
+router.delete('/delete_card', authentification, async (req, res) => {
+    const cardData = req.body;
+    const query = 'DELETE FROM card WHERE id = ?';
+    const values = [cardData.id];
+    const [result] = await db.query(query, values);
+    console.log(result);
+    if(result.affectedRows > 0){
+        res.json({message: "Card deleted successfully"});
+    } else {
+        res.status(500).json({message: "Error deleting card"});
+    }
+});
+
+
 
 // random 15 cards for index.html
 router.get('/random_cards', asyncHandler(async (req, res) => {
