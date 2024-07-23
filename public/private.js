@@ -640,8 +640,10 @@ async function loadBar() {
     <h1>Bonjour, ${activeUser.username}</h1>
     <p class="lead">Bienvenue dans le monde des albums de musique !</p>
     <p class="lead">Utilisez la barre de recherche pour trouver plus rapidement la tuile que vous recherchez ! </p>
-    <p class="lead">Veuillez sélectionner une option valide dans les deux premières cases, puis entrez votre recherche dans la barre de recherche et cliquez sur Recherche.</p>
+    <p class="lead">Veuillez noter que vous ne pouvez effectuer un filtrage en cliquant sur le bouton de recherche que lorsque des options valides sont sélectionnées dans les deux premières cases et que la barre de recherche n'est pas vide.</p>
     <p class="lead">En cliquant sur Effacer, vous videriez la barre de recherche et toutes les tuiles seront affichées.</p>
+    <p class="lead">Si vous souhaitez voir toutes les tuiles que vous avez créées ou créer une nouvelle tuile, veuillez cliquer sur 'Vos tuiles' en haut.</p>
+    <p class="lead">Veuillez noter que si vous n'êtes pas administrateur, vous ne pouvez modifier ou supprimer que les tuiles que vous avez créées vous-même.</p>
     `;
     if (activeUser.role === "admin") {
         loadAdminBar();

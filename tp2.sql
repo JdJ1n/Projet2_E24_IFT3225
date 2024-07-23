@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- 主机： localhost:3306
--- 生成日期： 2024-07-22 19:32:07
+-- 生成日期： 2024-07-23 03:55:36
 -- 服务器版本： 5.7.24
 -- PHP 版本： 8.3.1
 
@@ -59,7 +59,11 @@ INSERT INTO `card` (`id`, `name`, `artist`, `category_id`, `user_id`, `date`, `d
 (14, 'Nevermind', 'Nirvana', 13, 3, '1991-09-24', 'Defined the grunge era.', 'https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/95/fd/b9/95fdb9b2-6d2b-92a6-97f2-51c1a6d77f1a/00602527874609.rgb.jpg/1400x1400bb.jpg'),
 (15, 'Appetite for Destruction', 'Guns N\' Roses', 14, 3, '1987-07-21', 'Debut album by Guns N\' Roses.', 'https://is1-ssl.mzstatic.com/image/thumb/Music125/v4/a0/4d/c4/a04dc484-03cc-02aa-fa82-5334fcb4bc16/18UMGIM24878.rgb.jpg/1400x1400bb.jpg'),
 (16, 'Slowdive', 'Slowdive', 9, 6, '2017-05-05', 'Sugar for the pill', 'https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/81/42/f5/8142f595-dc02-1b4f-0cea-b265ac6c85f3/656605143262.jpg/1400x1400bb.jpg'),
-(17, 'Fragile', 'Yes', 2, 6, '1972-01-04', 'Supergroup', 'images/Yes_Fragile.jpg');
+(17, 'Fragile', 'Yes', 2, 6, '1972-01-04', 'Supergroup', 'https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/10/a4/3d/10a43d25-f05e-612c-799c-4c3687a3aeb6/603497886128.jpg/1400x1400bb.jpg'),
+(35, 'Kyouiku', 'Tokyo Incidents', 2, 3, '2004-11-25', '', 'https://is1-ssl.mzstatic.com/image/thumb/Music128/v4/df/a2/f3/dfa2f3af-8efc-a324-4e3b-eefa4db1fb1c/00600406798046.rgb.jpg/1400x1400bb.jpg'),
+(36, 'crystallize', 'Tokyo Shoegazer', 3, 6, '2011-11-23', '東京酒吐座', 'https://is1-ssl.mzstatic.com/image/thumb/Music122/v4/f2/f2/c1/f2f2c148-c713-b128-7b9d-fffd466757f0/4526180630418_HHCD-013D_JK.jpg/1400x1400bb.jpg'),
+(37, 'Up Your Alley', 'Joan Jett & The Blackhearts', 2, 6, '1988-05-23', '', 'https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/49/f7/8b/49f78bb0-c748-1c5c-e634-b1cad8fbe803/074644414622.jpg/1400x1400bb.jpg'),
+(38, 'London Calling', 'The Clash', 2, 6, '1979-12-14', 'I wasn\'t born so much as I fell out.', 'https://is1-ssl.mzstatic.com/image/thumb/Music125/v4/45/d7/17/45d71740-b204-de23-3f9e-f2f823296f1d/886443520721.jpg/1400x1400bb.jpg');
 
 -- --------------------------------------------------------
 
@@ -115,7 +119,7 @@ INSERT INTO `users` (`id`, `username`, `email`, `password`, `role`, `authToken`)
 (3, 'zangyilin1997@gmail.com', 'zangyilin1997@gmail.com', '$2b$10$QsQMU/WReyJx83WFYYeyO.5rAsK9Z6dcBQFAvSFquSAB8T9cJOAYe', 'user', NULL),
 (4, 'jjd1024@foxmail.com', 'jjd1024@foxmail.com', '$2b$10$KY.2DZZAMuSwhcj.d9EiQu/1pj49NSj3tZAD2AuRqfQME6O.sNLJu', 'user', NULL),
 (5, 'admin', 'admin@admin.com', '$2b$10$2lxB/IYHiaZLHKB2sBCzL.OlyCm59RVtwE1vGsZmdPykBsdoSViPS', 'admin', NULL),
-(6, 'j@j.com', 'j@j.com', '$2b$10$7mMSbITZeO7bMPwnKJxI7eG4eyla.AcGnnWiIodxmagJLpblTHX3C', 'user', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NiwibmFtZSI6ImpAai5jb20iLCJyb2xlIjoidXNlciIsImlhdCI6MTcyMTY3NjA1MCwiZXhwIjoxNzIxNzYyNDUwfQ.wSe-Kf9yebRBN-5AiydFkUENa8Yvrz8t5JzAiSTD-HE'),
+(6, 'j@j.com', 'j@j.com', '$2b$10$7mMSbITZeO7bMPwnKJxI7eG4eyla.AcGnnWiIodxmagJLpblTHX3C', 'user', NULL),
 (7, 'q@q.com', 'q@q.com', '$2b$10$WqryBTUTyh7mJq.e6TZ2buSx3Te0IJqcn/jfGFUTGiDNCVJx/DouG', 'user', NULL),
 (8, '1@qq.com', '1@qq.com', '$2b$10$HX26pOxaIeAS5ye9oJ5n6eS2QYhSjUThGV7t3FTv2itzluQAFvj1e', 'user', NULL);
 
@@ -151,7 +155,7 @@ ALTER TABLE `users`
 -- 使用表AUTO_INCREMENT `card`
 --
 ALTER TABLE `card`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=39;
 
 --
 -- 使用表AUTO_INCREMENT `category`
