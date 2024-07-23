@@ -95,7 +95,7 @@ async function showCurrentContents() {
     }
 
     // showPage1
-    showPage(active_user, display_cards, 1);
+    await showPage(active_user, display_cards, 1);
 
     // add listeners for paginations
     var pageLinks = document.querySelectorAll('.page-link');
@@ -131,16 +131,18 @@ async function showCurrentContents() {
             await addElement();
         }
 
-        await Promise.all(page_cards.map(async card => {
+        for (const card of page_cards) {
             if (active_user.role === 'user' && card.user_id != active_user.id) {
-                return createCard(card);
+                await createCard(card);
             } else {
-                return createEditableCard(card);
+                await createEditableCard(card);
             }
-        }));
+        }
 
-        await paintCards();
-        await useMasonry();
+        setTimeout(async function () {
+            await paintCards();
+            await useMasonry();
+        }, 256);
     }
 
 }
@@ -148,14 +150,68 @@ async function showCurrentContents() {
 async function cardFilter(active_user, cards) {
     const option1 = document.getElementById('methodSelect').value;
     const option2 = document.getElementById('attrSelect').value;
-    //cards[0].id;
-    //cards[0].
+    const searchInput = document.getElementById('searchInput').value;
+
+    if (searchInput != "") {
+        if (option1 == 1) {
+            cards = exactSearch(option2, searchInput, cards);
+        } else if (option1 == 2) {
+            cards = fuzzySearch(option2, searchInput, cards);
+        }
+    }
+
     if (active_user.role === 'user' && showUsersCards) {
-        const filtered_cards = cards.filter(card => card.user_id == active_user.id);
-        return filtered_cards;
+        cards = cards.filter(card => card.user_id == active_user.id);
     }
     return cards;
 }
+
+function exactSearch(attr, input, cards) {
+    const lowerCaseInput = input.toLowerCase();
+    switch (attr) {
+        case '1':
+            //card.user_email
+            return cards.filter(card => card.user_email.toLowerCase() === lowerCaseInput);
+        case '2':
+            //card.category_name
+            return cards.filter(card => card.category_name.toLowerCase() === lowerCaseInput);
+        case '3':
+            //card.name
+            return cards.filter(card => card.name.toLowerCase() === lowerCaseInput);
+        case '4':
+            //card.artist
+            return cards.filter(card => card.artist.toLowerCase() === lowerCaseInput);
+        case '5':
+            //card.description
+            return cards.filter(card => card.description.toLowerCase() === lowerCaseInput);
+        default:
+            return cards; 
+    }
+}
+
+function fuzzySearch(attr, input, cards) {
+    const lowerCaseInput = input.toLowerCase();
+    switch (attr) {
+        case '1':
+            //card.user_email
+            return cards.filter(card => card.user_email.toLowerCase().includes(lowerCaseInput));
+        case '2':
+            //card.category_name
+            return cards.filter(card => card.category_name.toLowerCase().includes(lowerCaseInput));
+        case '3':
+            //card.name
+            return cards.filter(card => card.name.toLowerCase().includes(lowerCaseInput));
+        case '4':
+            //card.artist
+            return cards.filter(card => card.artist.toLowerCase().includes(lowerCaseInput));
+        case '5':
+            //card.description
+            return cards.filter(card => card.description.toLowerCase().includes(lowerCaseInput));
+        default:
+            return cards; 
+    }
+}
+
 
 async function createCard(card) {
     const cardElement = document.createElement('div');

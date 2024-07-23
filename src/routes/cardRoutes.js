@@ -22,7 +22,7 @@ router.get('/user_cards', authentification, asyncHandler(async (req, res) => {
 router.post('/add_card', authentification, async (req, res) => {
     const cardData = req.body;
     const query = 'INSERT INTO card (name, artist, category_id, user_id, date, description, url) VALUES (?, ?, ?, ?, ?, ?, ?)';
-    const values = [cardData.name, cardData.artist, cardData.category_id, req.user.id, cardData.date, cardData.description, cardData.url];
+    const values = [cardData.name, cardData.artist, cardData.category_id, cardData.user_id, cardData.date, cardData.description, cardData.url];
     const [result] = await db.query(query, values); 
     if(result.affectedRows > 0){
         res.json({message: "Card added successfully", cardId: result.insertId});
@@ -34,7 +34,7 @@ router.post('/add_card', authentification, async (req, res) => {
 router.delete('/edit_card', authentification, async (req, res) => {
     const cardData = req.body;
     const query = 'UPDATE card SET name = ?, artist = ?, category_id = ?, user_id = ?, date = ?, description = ?, url = ? WHERE id = ?';
-    const values = [cardData.name, cardData.artist, cardData.category_id, req.user.id, cardData.date, cardData.description, cardData.url, cardData.id];
+    const values = [cardData.name, cardData.artist, cardData.category_id, cardData.user_id, cardData.date, cardData.description, cardData.url, cardData.id];
     const [result] = await db.query(query, values);
     if(result.affectedRows > 0){
         res.json({message: "Card updated successfully"});
