@@ -107,7 +107,7 @@ async function addCards(cards) {
         cardElement.innerHTML = `
                     <div class="card rounded">
                         <div class="bd-placeholder-img card-img-top">
-                            <img class="rounded-top" src=${card.url} alt="${card.name} - ${card.artist}" height="100%" width="100%" class="bd-placeholder-img">
+                            <img class="rounded-top bd-placeholder-img" src="${card.url}" alt="${card.name} - ${card.artist}">
                         </div>
                         <div class="card-body rounded-bottom">
                             <h4 class="card-title">${card.name} - ${card.artist}</h4>
