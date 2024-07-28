@@ -183,7 +183,7 @@ function exactSearch(attr, input, cards) {
             //card.description
             return cards.filter(card => card.description.toLowerCase() === lowerCaseInput);
         default:
-            return cards; 
+            return cards;
     }
 }
 
@@ -206,7 +206,7 @@ function fuzzySearch(attr, input, cards) {
             //card.description
             return cards.filter(card => card.description.toLowerCase().includes(lowerCaseInput));
         default:
-            return cards; 
+            return cards;
     }
 }
 
@@ -215,16 +215,16 @@ async function createCard(card) {
     cardElement.className = 'col-sm-6 col-lg-4 mb-4 rounded';
     cardElement.innerHTML = `
     <div class="card rounded">
-    <div class="bd-placeholder-img card-img-top">
-        <img class="rounded-top" src=${card.url} alt="${card.name} - ${card.artist}" height="100%" width="100%" class="bd-placeholder-img" onerror="this.onerror=null; this.src='images/Default.png';"></div>
-    <div class="card-body rounded-bottom">
-        <h4 class="card-title">${card.name} - ${card.artist}</h4>
-        <h5 class="card-text">${card.category_name}</h5>
-        <h5 class="card-text">${new Date(card.date).toLocaleDateString()}</h5>
-        <p class="card-text">${card.description}</p>
-        <p class="card-text">
-        <small>created by ${card.user_email}</small></p>
-    </div>
+        <div class="bd-placeholder-img card-img-top">
+            <img class="rounded-top bd-placeholder-img" src="${card.url}" alt="${card.name} - ${card.artist}" onerror="this.onerror=null; this.src='images/Default.png';">
+        </div>
+        <div class="card-body rounded-bottom">
+            <h4 class="card-title">${card.name} - ${card.artist}</h4>
+            <h5 class="card-text">${card.category_name}</h5>
+            <h5 class="card-text">${new Date(card.date).toLocaleDateString()}</h5>
+            <p class="card-text">${card.description}</p>
+            <p class="card-text"><small>created by ${card.user_email}</small></p>
+        </div>
     </div>
     `;
     document.getElementById('card-contents').appendChild(cardElement);
@@ -238,7 +238,7 @@ async function createEditableCard(card) {
     cardElement.innerHTML = `
     <div class="card rounded">
         <div class="bd-placeholder-img card-img-top">
-            <img class="rounded-top" src=${card.url} alt="${card.name} - ${card.artist}" height="100%" width="100%" class="bd-placeholder-img" onerror="this.onerror=null; this.src='images/Default.png';"></div>
+            <img class="rounded-top bd-placeholder-img" src=${card.url} alt="${card.name} - ${card.artist}" onerror="this.onerror=null; this.src='images/Default.png';"></div>
         <div class="card-body rounded-bottom">
             <h4 class="card-title">${card.name} - ${card.artist}</h4>
             <h5 class="card-text">${card.category_name}</h5>
@@ -270,35 +270,43 @@ async function createEditableCard(card) {
     editCardForm.tabindex = '-1';
     editCardForm.innerHTML = `
     <div class="modal-dialog" role="document">
-    <div class="modal-content rounded-4 shadow">
-        <div class="modal-header p-5 pb-4 border-bottom-0">
-        <h1 class="fw-bold mb-0 fs-2">Modification d'une tuile</h1>
-        <button id="closeEditForm${card.id}" type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        <div class="modal-content rounded-4 shadow">
+            <div class="modal-header p-5 pb-4 border-bottom-0">
+            <h1 class="fw-bold mb-0 fs-2">Modification d'une tuile</h1>
+            <button id="closeEditForm${card.id}" type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-5 pt-0">
+            <form id="edit_card_form_${card.id}">
+                <div class="form-floating mb-3">
+                    <input id="edit_card_name_${card.id}" name="name" type="text" class="form-control rounded-3" placeholder="Nom d'album" value="${card.name}" required>
+                    <label for="edit_card_name_${card.id}">Nom d'album</label>
+                </div>
+                <div class="form-floating mb-3">
+                    <input id="edit_card_artist_${card.id}" name="artist" type="text" class="form-control rounded-3" placeholder="Artiste" value="${card.artist}" required>
+                    <label for="edit_card_artist_${card.id}">Artiste</label>
+                </div>
+                <div class="form-floating mb-3">
+                    <select class="form-select" id="edit_card_category_${card.id}" required>
+                        <option value="" disabled>--</option>
+                    </select>
+                    <label for="edit_card_category_${card.id}">Genre musical</label>
+                </div>
+                <div class="form-floating mb-3">
+                    <input id="edit_card_date_${card.id}" name="date" type="date" class="form-control rounded-3" value="${new Date(card.date).toISOString().slice(0, 10)}" required>
+                    <label for="edit_card_date_${card.id}">Date de sortie</label>
+                </div>
+                <div class="form-floating mb-3">
+                    <input id="edit_card_url_${card.id}" name="url" type="url" class="form-control rounded-3" placeholder="Lien vers la couverture d'album" value="${card.url}" required>
+                    <label for="edit_card_url_${card.id}">Lien vers la couverture d'album</label>
+                </div>
+                <div class="form-floating mb-3">
+                    <input id="edit_card_des_${card.id}" name="description" type="text" class="form-control rounded-3" placeholder="Description" value="${card.description}">
+                    <label for="edit_card_des_${card.id}">Description</label>
+                </div>
+                <button id="edit_card_clear_${card.id}" class="w-100 mb-2 btn btn-lg rounded-3 btn-outline-success" type="reset">Réinitialiser</button>
+                <button id="edit_card_btn_${card.id}" class="w-100 mb-2 btn btn-lg rounded-3 btn-primary" type="submit">Modifier</button></form>
+            </div>
         </div>
-        <div class="modal-body p-5 pt-0">
-        <form id="edit_card_form_${card.id}">
-            <div class="form-floating mb-3">
-            <input id="edit_card_name_${card.id}" name="name" type="name" class="form-control rounded-3" placeholder="Nom d'album" value="${card.name}" required>
-            <label for="edit_card_name_${card.id}">Nom d'album</label></div>
-            <div class="form-floating mb-3">
-            <input id="edit_card_artist_${card.id}" name="artist" type="artist" class="form-control rounded-3" placeholder="Artiste" value="${card.artist}" required>
-            <label for="edit_card_artist_${card.id}">Artiste</label></div>
-            <div class="form-floating mb-3">
-            <select class="form-select" id="edit_card_category_${card.id}" required></select>
-            <label for="edit_card_category_${card.id}">Genre musical</label></div>
-            <div class="form-floating mb-3">
-            <input id="edit_card_date_${card.id}" name="date" type="date" class="form-control rounded-3" placeholder="Date de sortie" value="${new Date(card.date).toISOString().slice(0, 10)}" required>
-            <label for="edit_card_date_${card.id}">Date de sortie</label></div>
-            <div class="form-floating mb-3">
-            <input id="edit_card_url_${card.id}" name="url" type="url" class="form-control rounded-3" placeholder="Lien vers la couverture d'album" value="${card.url}" required>
-            <label for="edit_card_url_${card.id}">Lien vers la couverture d'album</label></div>
-            <div class="form-floating mb-3">
-            <input id="edit_card_des_${card.id}" name="description" type="description" class="form-control rounded-3" placeholder="Description" value="${card.description}">
-            <label for="edit_card_des_${card.id}">Description</label></div>
-            <button id="edit_card_clear_${card.id}" class="w-100 mb-2 btn btn-lg rounded-3 btn-outline-success" type="reset">Réinitialiser</button>
-            <button id="edit_card_btn_${card.id}" class="w-100 mb-2 btn btn-lg rounded-3 btn-primary" type="submit">Modifier</button></form>
-        </div>
-    </div>
     </div>       
     `;
 
@@ -320,19 +328,20 @@ async function createEditableCard(card) {
     deleteCardModal.role = 'dialog';
     deleteCardModal.innerHTML = `
     <div class="modal-dialog">
-    <div class="modal-content rounded-4 shadow">
-        <div class="modal-header border-bottom-0">
-        <h1 class="fw-bold mb-0 fs-2">Suppression d'une tuile</h1>
-        <button id="closeDeleteModal${card.id}" type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        <div class="modal-content rounded-4 shadow">
+            <div class="modal-header border-bottom-0">
+            <h1 class="fw-bold mb-0 fs-2">Suppression d'une tuile</h1>
+            <button id="closeDeleteModal${card.id}" type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body py-0">
+            <p>Êtes-vous sûr de vouloir supprimer la tuile</p>
+            <p>${card.name} - ${card.artist} ?</p>
+            </div>
+            <div class="modal-footer flex-column align-items-stretch w-100 gap-2 pb-3 border-top-0">
+            <button id="delete_card_${card.id}" type="submit" class="btn btn-lg btn-danger">Confirmer</button>
+            <button type="button" class="btn btn-lg btn-secondary" data-bs-dismiss="modal">Annuler</button>
+            </div>
         </div>
-        <div class="modal-body py-0">
-        <p>Êtes-vous sûr de vouloir supprimer la tuile</p>
-        <p>${card.name} - ${card.artist} ?</p>
-        </div>
-        <div class="modal-footer flex-column align-items-stretch w-100 gap-2 pb-3 border-top-0">
-        <button id="delete_card_${card.id}" type="submit" class="btn btn-lg btn-danger">Confirmer</button>
-        <button type="button" class="btn btn-lg btn-secondary" data-bs-dismiss="modal">Annuler</button></div>
-    </div>
     </div>
     `;
 
@@ -462,11 +471,11 @@ async function addElement() {
     cardElement.className = 'col-sm-6 col-lg-4 mb-4 rounded';
     cardElement.innerHTML = `
     <div class="card">
-    <div class="btn btn-sm btn-outline-secondary">
-        <a data-bs-toggle="modal" data-bs-target="#modalAddCard" href="#" class="stretched-link card-text" aria-label="Add" style="text-decoration: none; color: inherit; font-size: 2rem;">
-        +
-        <span class="visually-hidden">Add</span></a>
-    </div>
+        <div class="btn btn-sm btn-outline-secondary">
+            <a data-bs-toggle="modal" data-bs-target="#modalAddCard" href="#" class="stretched-link card-text" aria-label="Add" style="text-decoration: none; color: inherit; font-size: 2rem;">
+            +
+            <span class="visually-hidden">Add</span></a>
+        </div>
     </div>
     `;
 
@@ -478,36 +487,37 @@ async function addElement() {
     addCardForm.tabindex = '-1';
     addCardForm.innerHTML = `
     <div class="modal-dialog" role="document">
-    <div class="modal-content rounded-4 shadow">
-        <div class="modal-header p-5 pb-4 border-bottom-0">
-        <h1 class="fw-bold mb-0 fs-2">Ajout d'une tuile</h1>
-        <button id="closeAddForm" type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        <div class="modal-content rounded-4 shadow">
+            <div class="modal-header p-5 pb-4 border-bottom-0">
+            <h1 class="fw-bold mb-0 fs-2">Ajout d'une tuile</h1>
+            <button id="closeAddForm" type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-5 pt-0">
+            <form id="add_card_form">
+                <div class="form-floating mb-3">
+                <input id="add_card_name" name="name" type="text" class="form-control rounded-3" placeholder="Nom d'album" required>
+                <label for="add_card_name">Nom d'album</label></div>
+                <div class="form-floating mb-3">
+                <input id="add_card_artist" name="artist" type="text" class="form-control rounded-3" placeholder="Artiste" required>
+                <label for="add_card_artist">Artiste</label></div>
+                <div class="form-floating mb-3">
+                <select class="form-select" id="add_card_category" required>
+                    <option value="" disabled>--</option>
+                </select>
+                <label for="add_card_category">Genre musical</label></div>
+                <div class="form-floating mb-3">
+                <input id="add_card_date" name="date" type="date" class="form-control rounded-3" required>
+                <label for="add_card_date">Date de sortie</label></div>
+                <div class="form-floating mb-3">
+                <input id="add_card_url" name="url" type="url" class="form-control rounded-3" placeholder="Lien vers la couverture d'album" required>
+                <label for="add_card_url">Lien vers la couverture d'album</label></div>
+                <div class="form-floating mb-3">
+                <input id="add_card_des" name="description" type="text" class="form-control rounded-3" placeholder="Description">
+                <label for="add_card_des">Description</label></div>
+                <button id="add_card_clear" class="w-100 mb-2 btn btn-lg rounded-3 btn-outline-danger" type="reset">Effacer</button>
+                <button id="add_card_btn" class="w-100 mb-2 btn btn-lg rounded-3 btn-primary" type="submit">Ajouter</button></form>
+            </div>
         </div>
-        <div class="modal-body p-5 pt-0">
-        <form id="add_card_form">
-            <div class="form-floating mb-3">
-            <input id="add_card_name" name="name" type="name" class="form-control rounded-3" placeholder="Nom d'album" required>
-            <label for="add_card_name">Nom d'album</label></div>
-            <div class="form-floating mb-3">
-            <input id="add_card_artist" name="artist" type="artist" class="form-control rounded-3" placeholder="Artiste" required>
-            <label for="add_card_artist">Artiste</label></div>
-            <div class="form-floating mb-3">
-            <select class="form-select" id="add_card_category" required>
-                <option selected disabled value="">Choisir...</option></select>
-            <label for="add_card_category">Genre musical</label></div>
-            <div class="form-floating mb-3">
-            <input id="add_card_date" name="date" type="date" class="form-control rounded-3" placeholder="Date de sortie" required>
-            <label for="add_card_date">Date de sortie</label></div>
-            <div class="form-floating mb-3">
-            <input id="add_card_url" name="url" type="url" class="form-control rounded-3" placeholder="Lien vers la couverture d'album" required>
-            <label for="add_card_url">Lien vers la couverture d'album</label></div>
-            <div class="form-floating mb-3">
-            <input id="add_card_des" name="description" type="description" class="form-control rounded-3" placeholder="Description">
-            <label for="add_card_des">Description</label></div>
-            <button id="add_card_clear" class="w-100 mb-2 btn btn-lg rounded-3 btn-outline-danger" type="reset">Effacer</button>
-            <button id="add_card_btn" class="w-100 mb-2 btn btn-lg rounded-3 btn-primary" type="submit">Ajouter</button></form>
-        </div>
-    </div>
     </div>
     `;
 

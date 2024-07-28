@@ -1,5 +1,5 @@
+<!DOCTYPE html>
 <!-- Jiadong Jin 20150692 Yilin Zang 20209818 -->
-<!doctype html>
 <html lang="fr" data-bs-theme="auto">
 
 <head>
@@ -12,6 +12,7 @@
 
   <link href="assets/dist/css/bootstrap.min.css" rel="stylesheet">
 
+  <link rel="icon" href="/public/images/favicon.ico">
 
   <style>
     .bd-placeholder-img {
@@ -101,6 +102,11 @@
       background-size: cover;
       background-position: center;
     }
+
+    .rounded-top {
+      height: 100%;
+      width: 100%;
+  }
   </style>
 
 
@@ -215,7 +221,7 @@
       <button class="btn btn-lg btn-primary" data-bs-toggle="modal" data-bs-target="#modalSignin">Rejoignez-nous
         &raquo;</button>
     </div>
-    <!-- Sign up form -->
+    
     <div class="modal fade p-5" tabindex="-1" role="dialog" id="modalSignin">
       <div class="modal-dialog" role="document">
         <div class="modal-content rounded-4 shadow">
@@ -254,7 +260,8 @@
     </div>
 
     <div class="bg-body-tertiary p-5 rounded">
-      <div id="card-contents" class="row" data-masonry='{"percentPosition": true }'>
+      <div id="card-contents" class="row" data-masonry='{"percentPosition": "true" }'>
+
       </div>
     </div>
   </main>

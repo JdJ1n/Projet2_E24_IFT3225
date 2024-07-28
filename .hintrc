@@ -11,6 +11,7 @@
           "text-underline-offset"
         ]
       }
-    ]
+    ],
+    "attr-value-double-quotes": false
   }
 }
